@@ -3,7 +3,7 @@ A Project dedicated to making GPU Partitioning on Windows easier!
 
 WARNING: An extreme work in progress...
 
-Requirements...Hyper V feature added to Windowes 10, most likely your Windows 10 updated to 21h1, and a single Desktop NVIDIA GPU (not a laptop GPU).
+Requirements...Hyper V feature added to Windows 10, most likely your Windows 10 updated to 21h1, and a single Desktop NVIDIA GPU (not a laptop GPU).
 
 # How to use the file copier
 1. You must create a Win10 VM using the same Windows 10 Version that your host is currently running (Eg. If you're using 21H1, your client needs to VM needs to be 21H1).  Needs to have at least 1GB free space in order for drivers to be added
