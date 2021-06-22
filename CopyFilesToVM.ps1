@@ -40,7 +40,7 @@ foreach ($d in $drivers) {
             if (!$(Get-Item -Path $Destination -ErrorAction SilentlyContinue).Exists ) {
                 New-Item -ItemType Directory -Path $Destination -Force | Out-Null
                 }
-            Copy-Item $path2 -Destination $DestinationNormal -Force
+            Copy-Item $path2 -Destination $Destination -Force
             Write-Host "Copied $path2 to $Destination" -ForegroundColor Green
             }
 
