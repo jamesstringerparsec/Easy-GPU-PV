@@ -1,6 +1,8 @@
 # Easy-GPU-P
 A Project dedicated to making GPU Partitioning on Windows easier!
 
+WARNING: An extreme work in progress...
+
 Requirements...Hyper V feature added to Windowes 10, most likely your Windows 10 updated to 21h1, and a single Desktop NVIDIA GPU (not a laptop GPU).
 
 # How to use the file copier
