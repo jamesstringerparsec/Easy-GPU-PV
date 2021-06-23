@@ -1,11 +1,10 @@
 Function Add-VMGpuPartitionAdapterFiles {
 param(
-[Parameter(Mandatory=$true)][string]$VMname = "GPU-P",
+[string]$VMname = "GPU-P",
 [string]$hostname = $ENV:COMPUTERNAME,
 [string]$DriveLetter = "X:"
 )
-
-$path = (Get-VM -VMName $VMname | Select-Object -Property VMId | Get-VHD).path
+$VHDpath = (Get-VM -VMName $VMname | Select-Object -Property VMId | Get-VHD).path
 $Unique = (Mount-VHD -Path $path -PassThru | Get-Disk | Get-Partition | Get-Volume | Where-Object size -GT 10GB)
 Get-Volume -UniqueId $unique.UniqueId | Get-Partition | Add-PartitionAccessPath -AccessPath $DriveLetter
 
@@ -57,6 +56,8 @@ foreach ($d in $drivers) {
     }
     }
 Get-Volume -UniqueId $unique.UniqueId | Get-Partition | Remove-PartitionAccessPath -AccessPath $driveLetter
-Dismount-vhd -Path $path
+Dismount-vhd -Path $VHDpath
+
 }
 
+Add-VMGpuPartitionAdapterFiles 
