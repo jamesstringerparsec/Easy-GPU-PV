@@ -5,7 +5,7 @@ param(
 [string]$DriveLetter = "X:"
 )
 $VHDpath = (Get-VM -VMName $VMname | Select-Object -Property VMId | Get-VHD).path
-$Unique = (Mount-VHD -Path $path -PassThru | Get-Disk | Get-Partition | Get-Volume | Where-Object size -GT 10GB)
+$Unique = (Mount-VHD -Path $VHDpath -PassThru | Get-Disk | Get-Partition | Get-Volume | Where-Object size -GT 10GB)
 Get-Volume -UniqueId $unique.UniqueId | Get-Partition | Add-PartitionAccessPath -AccessPath $DriveLetter
 
 # Get Third Party drivers used, that are not provided by Microsoft and presumably included in the OS
