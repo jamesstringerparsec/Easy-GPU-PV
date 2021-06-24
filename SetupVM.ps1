@@ -4,7 +4,7 @@ param(
 [string]$VMName = "GPU-P",
 [int64]$MemoryAmount = 8GB,
 [int]$CPUCores = 4,
-[string]$WindowsISOPath = "C:\Users\james\Downloads\Windows10_InsiderPreview_Client_x64_en-us_21354.iso"
+[string]$WindowsISOPath = ""
 )
     New-vhd -SizeBytes $HDDSize -Path "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\$VMName.vhdx" -Dynamic
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\$VMName.vhdx" -Generation 2 -SwitchName "Default Switch"
