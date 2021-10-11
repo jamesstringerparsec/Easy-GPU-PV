@@ -1,10 +1,10 @@
-Function New-GPUEnabledVM {
+﻿Function New-GPUEnabledVM {
 param(
 [int64]$HDDSize = 40GB,
 [string]$VMName = "GPU-P",
 [int64]$MemoryAmount = 8GB,
 [int]$CPUCores = 4,
-[string]$WindowsISOPath = ""
+[string]$WindowsISOPath = "C:\Users\james\Downloads\Windows11_InsiderPreview_Client_x64_en-us__22000.iso"
 )
     New-vhd -SizeBytes $HDDSize -Path "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\$VMName.vhdx" -Dynamic
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\$VMName.vhdx" -Generation 2 -SwitchName "Default Switch"
@@ -37,5 +37,5 @@ param(
     Set-VMGpuPartitionAdapter -VMName $VMName -MinPartitionCompute 0 -MaxPartitionCompute 1000000000 -OptimalPartitionCompute 1000000000
 }
 
-#Assign-VMGPUPartitionAdapter -GPUName "NVIDIA GeForce RTX 2060 SUPER" -VMName "GPU-P"
+Assign-VMGPUPartitionAdapter -GPUName "NVIDIA GeForce RTX 2060 SUPER" -VMName "GPU-P"
 
