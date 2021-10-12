@@ -4189,7 +4189,7 @@ $params = @{
     SizeBytes  = 40gb
     MemoryAmount = 8GB
     CPUCores = 4
-    UnattendPath = "C:\Users\james\Downloads\autounattend.xml"
+    UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
     GPUName = "NVIDIA GeForce GTX 1050 Ti with Max-Q Design"
     GPUResourceAllocationPercentage = 25
 }
