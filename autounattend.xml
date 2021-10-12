@@ -4,7 +4,7 @@ Created using Windows AFG found at:
 ;http://www.windowsafg.com
 
 Installation Notes
-Location: United States
+Location: 
 Notes: Enter your comments here...
 **************************************************-->
 
@@ -19,7 +19,7 @@ Notes: Enter your comments here...
 <SystemLocale>en-US</SystemLocale>
 <UILanguage>en-US</UILanguage>
 <UILanguageFallback>en-US</UILanguageFallback>
-<UserLocale>en-US</UserLocale>
+<UserLocale>en-AU</UserLocale>
 </component>
 <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <DiskConfiguration>
@@ -77,7 +77,7 @@ Notes: Enter your comments here...
 <ModifyPartition wcm:action="add">
 <Order>4</Order>
 <PartitionID>4</PartitionID>
-<Label>Local Disk</Label>
+<Label>OS</Label>
 <Letter>C</Letter>
 <Format>NTFS</Format>
 </ModifyPartition>
@@ -119,45 +119,31 @@ Notes: Enter your comments here...
 <settings pass="specialize">
 <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <InputLocale>0409:00000409</InputLocale>
-<SystemLocale>en-US</SystemLocale>
-<UILanguage>en-US</UILanguage>
-<UILanguageFallback>en-US</UILanguageFallback>
-<UserLocale>en-US</UserLocale>
+<SystemLocale>en-AU</SystemLocale>
+<UILanguage>en-AU</UILanguage>
+<UILanguageFallback>en-AU</UILanguageFallback>
+<UserLocale>en-AU</UserLocale>
 </component>
 <component name="Microsoft-Windows-Security-SPP-UX" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <SkipAutoActivation>true</SkipAutoActivation>
 </component>
 <component name="Microsoft-Windows-SQMApi" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<CEIPEnabled>1</CEIPEnabled>
+<CEIPEnabled>0</CEIPEnabled>
 </component>
 <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<ComputerName>GPU-P</ComputerName>
+<ComputerName>-PC</ComputerName>
 <ProductKey>W269N-WFGWX-YVC9B-4J6C9-T83GX</ProductKey>
 </component>
 </settings>
 <settings pass="oobeSystem">
 <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<UserAccounts>
-	<LocalAccounts>
-      	<LocalAccount wcm:action="add">
-         	<Password>
-            	<Value>CoolPassword!:)</Value>
-            	<PlainText>true</PlainText>
-         	</Password>
-         	<Description>Test account</Description>
-         	<DisplayName>GPU-P</DisplayName>
-         	<Group>Administrators</Group>
-         	<Name>GPU-P</Name>
-      	</LocalAccount>
-	</LocalAccounts>
-</UserAccounts>
 <AutoLogon>
 <Password>
 <Value>CoolPassword!:)</Value>
 <PlainText>true</PlainText>
 </Password>
 <Enabled>true</Enabled>
-<Username>GPUP</Username>
+<Username>GPU-P</Username>
 </AutoLogon>
 <OOBE>
 <HideEULAPage>true</HideEULAPage>
@@ -169,30 +155,50 @@ Notes: Enter your comments here...
 <SkipMachineOOBE>true</SkipMachineOOBE>
 <ProtectYourPC>1</ProtectYourPC>
 </OOBE>
+<UserAccounts>
+<LocalAccounts>
+<LocalAccount wcm:action="add">
+<Password>
+<Value>CoolPassword!:)</Value>
+<PlainText>true</PlainText>
+</Password>
+<Description></Description>
+<DisplayName>GPU-P</DisplayName>
+<Group>Administrators</Group>
+<Name>GPU-P</Name>
+</LocalAccount>
+</LocalAccounts>
+</UserAccounts>
 <RegisteredOrganization></RegisteredOrganization>
 <RegisteredOwner>GPU-P</RegisteredOwner>
 <DisableAutoDaylightTimeSet>false</DisableAutoDaylightTimeSet>
 <FirstLogonCommands>
 <SynchronousCommand wcm:action="add">
-<Description>Control Panel View</Description>
+<Description>Allow Scripts</Description>
 <Order>1</Order>
-<CommandLine>reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" /v StartupPage /t REG_DWORD /d 0 /f</CommandLine>
-<RequiresUserInput>true</RequiresUserInput>
-</SynchronousCommand>
-<SynchronousCommand wcm:action="add">
-<Order>2</Order>
-<Description>Control Panel Icon Size</Description>
+<CommandLine>reg add HKLM\Software\Policies\Microsoft\Windows\Powershell</CommandLine>
 <RequiresUserInput>false</RequiresUserInput>
-<CommandLine>reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" /v AllItemsIconView /t REG_DWORD /d 0 /f</CommandLine>
 </SynchronousCommand>
 <SynchronousCommand wcm:action="add">
+<Description>Allow Scripts</Description>
+<Order>2</Order>
+<CommandLine>reg add HKLM\Software\Policies\Microsoft\Windows\Powershell /v ExecutionPolicy /t REG_MULTI_SZ /d Unrestricted</commandline>
+<RequiresUserInput>false</RequiresUserInput>
+</SynchronousCommand>
+<SynchronousCommand wcm:action="add">
+<Description>Allow Scripts</Description>
 <Order>3</Order>
+<CommandLine>reg add HKLM\Software\Policies\Microsoft\Windows\Powershell /v EnableScripts /t REG_DWORD /d 1</commandline>
+<RequiresUserInput>false</RequiresUserInput>
+</SynchronousCommand>
+<SynchronousCommand wcm:action="add">
+<Order>4</Order>
 <RequiresUserInput>false</RequiresUserInput>
 <CommandLine>cmd /C wmic useraccount where name="GPU-P" set PasswordExpires=false</CommandLine>
 <Description>Password Never Expires</Description>
 </SynchronousCommand>
 </FirstLogonCommands>
-<TimeZone>Eastern Standard Time</TimeZone>
+<TimeZone>GTB Standard Time</TimeZone>
 </component>
 </settings>
 </unattend>

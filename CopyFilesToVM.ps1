@@ -1,37 +1,17 @@
-﻿function add-gpo-modifications {
-param(
-[string]$DriveLetter
-)
-    $querygpt = Get-content $DriveLetter\Windows\System32\GroupPolicy\gpt.ini
-    $matchgpt = $querygpt -match '{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}'
-    if ($matchgpt -contains "*0000F87571E3*" -eq $false) {
-        $gptstring = get-content $DriveLetter\Windows\System32\GroupPolicy\gpt.ini
-        $gpoversion = $gptstring -match "Version"
-        $GPO = $gptstring -match "gPCMachineExtensionNames"
-        $add = '[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}]'
-        $replace = "$GPO" + "$add"
-        (Get-Content "$DriveLetter\Windows\System32\GroupPolicy\gpt.ini").Replace("$GPO","$replace") | Set-Content "$DriveLetter\Windows\System32\GroupPolicy\gpt.ini"
-        [int]$i = $gpoversion.trim("Version=") 
-        [int]$n = $gpoversion.trim("Version=")
-        $n +=2
-        (Get-Content $DriveLetter\Windows\System32\GroupPolicy\gpt.ini) -replace "Version=$i", "Version=$n" | Set-Content $DriveLetter\Windows\System32\GroupPolicy\gpt.ini
-        }
-    else{
-        write-output "Not Required"
-        }
-    }
+﻿
 
 Function Setup-ParsecInstall {
 param(
 [string]$DriveLetter
 )
-    add-gpo-modifications -DriveLetter $DriveLetter
+    
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\ProgramData\Easy-GPU-P) -eq $true) {} Else {New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory | Out-Null}
-    Move-Item -Path $psscriptroot\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts
-    Move-Item -Path $psscriptroot\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup
-    Move-Item -Path $psscriptroot\parsecpublic.cer -Destination $DriveLetter\ProgramData\Easy-GPU-P
+    Copy-Item -Path $psscriptroot\gpt.ini -Destination $DriveLetter\Windows\system32\GroupPolicy
+    Copy-Item -Path $psscriptroot\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
+    Copy-Item -Path $psscriptroot\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
+    Copy-Item -Path $psscriptroot\parsecpublic.cer -Destination $DriveLetter\ProgramData\Easy-GPU-P
 }
 
 
