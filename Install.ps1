@@ -16,7 +16,7 @@ if (Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninst
             $Success = $true
             }
         catch {
-            if ($Retries -gt 4){
+            if ($Retries -gt 9){
                 $Success = $true
                 }
         else {
