@@ -28,7 +28,7 @@ param(
     add-gpo-modifications -DriveLetter $DriveLetter
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown -ItemType directory | Out-Null}
-    if((Test-Path -Path $DriveLetter\ProgramData\Easy-GPU-P) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Easy-GPU-P -ItemType directory | Out-Null}
+    if((Test-Path -Path $DriveLetter\ProgramData\Easy-GPU-P) -eq $true) {} Else {New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory | Out-Null}
     Move-Item -Path $psscriptroot\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts
     Move-Item -Path $psscriptroot\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup
     Move-Item -Path $psscriptroot\parsecpublic.cer -Destination $DriveLetter\ProgramData\Easy-GPU-P
@@ -2387,6 +2387,9 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             Write-W2VInfo "Copying GPU Files. This could take a while..."
             Add-VMGpuPartitionAdapterFiles -GPUName $GPUName -DriveLetter $windowsDrive
             }
+
+            Write-W2VInfo "Setting up Parsec to install at boot"
+            Setup-ParsecInstall -DriveLetter $WindowsDrive
 
             if ($DiskLayout -eq "UEFI")
             {
