@@ -2,15 +2,35 @@
 
 Function Setup-ParsecInstall {
 param(
-[string]$DriveLetter
+[string]$DriveLetter,
+[string]$Team_ID,
+[string]$Key
 )
-    
+    $new = @()
+
+    $content = get-content "$PSScriptRoot" + "\user\psscripts.ini" 
+
+    foreach ($line in $content) {
+        if ($line -like "0Parameters="){
+            $line = "0Parameters=-team_id=$Team_ID -team_key=$Key"
+            $new += $line
+            }
+        Else {
+            $new += $line
+            }
+    }
+    Set-Content -Value $new -Path "$PSScriptRoot" + "\user\psscripts.ini"
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff -ItemType directory | Out-Null}
+    if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup -ItemType directory | Out-Null}
+    if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\ProgramData\Easy-GPU-P) -eq $true) {} Else {New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory | Out-Null}
+    Copy-Item -Path $psscriptroot\cert.bat -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\gpt.ini -Destination $DriveLetter\Windows\system32\GroupPolicy
-    Copy-Item -Path $psscriptroot\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
-    Copy-Item -Path $psscriptroot\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
+    Copy-Item -Path $psscriptroot\User\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
+    Copy-Item -Path $psscriptroot\User\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
+    Copy-Item -Path $psscriptroot\Machine\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts
+    Copy-Item -Path $psscriptroot\Machine\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup
     Copy-Item -Path $psscriptroot\parsecpublic.cer -Destination $DriveLetter\ProgramData\Easy-GPU-P
 }
 
@@ -254,6 +274,18 @@ function Convert-WindowsImage {
         [string]
         [ValidateNotNullOrEmpty()]
         [string]$GPUName,
+
+        [Parameter(ParameterSetName="SRC")]
+        [Alias("TeamID")]
+        [string]
+        [ValidateNotNullOrEmpty()]
+        [string]$Team_ID,
+
+        [Parameter(ParameterSetName="SRC")]
+        [Alias("Team_Key")]
+        [string]
+        [ValidateNotNullOrEmpty()]
+        [string]$Key,
 
         [Parameter(ParameterSetName="SRC")]
         [switch]
@@ -2369,7 +2401,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             }
 
             Write-W2VInfo "Setting up Parsec to install at boot"
-            Setup-ParsecInstall -DriveLetter $WindowsDrive
+            Setup-ParsecInstall -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
 
             if ($DiskLayout -eq "UEFI")
             {
@@ -4187,10 +4219,12 @@ param(
 [int]$CPUCores,
 [string]$GPUName,
 [float]$GPUResourceAllocationPercentage,
-[string]$SourcePath 
+[string]$SourcePath,
+[string]$Team_ID,
+[string]$Key
 )
-    #New-vhd -SizeBytes $HDDSize -Path "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\$VMName.vhdx" -Dynamic
-    Convert-WindowsImage -SourcePath $SourcePath -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -GPUName $GPUName | Out-Null
+    
+    Convert-WindowsImage -SourcePath $SourcePath -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -GPUName $GPUName -Team_ID $Team_ID -Key $Key| Out-Null
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" | Out-Null
     Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
     Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false
@@ -4212,6 +4246,8 @@ $params = @{
     UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
     GPUName = "NVIDIA GeForce GTX 1050 Ti with Max-Q Design"
     GPUResourceAllocationPercentage = 25
+    Team_ID = "1mhDZ8RNbpGwFYwGYrMu9ewwcby"
+    Key = "ae31d6e201227b7caa977a0a9bce83652e67f29662d284c5e5c20db61e6d16d2"
 }
 
 
@@ -4219,3 +4255,4 @@ New-GPUEnabledVM @params
 
 
 
+Start-VM -Name GPU-P

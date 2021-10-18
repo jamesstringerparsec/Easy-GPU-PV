@@ -131,7 +131,7 @@ Notes: Enter your comments here...
 <CEIPEnabled>0</CEIPEnabled>
 </component>
 <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<ComputerName>-PC</ComputerName>
+<ComputerName>GPU-P</ComputerName>
 <ProductKey>W269N-WFGWX-YVC9B-4J6C9-T83GX</ProductKey>
 </component>
 </settings>
@@ -182,13 +182,13 @@ Notes: Enter your comments here...
 <SynchronousCommand wcm:action="add">
 <Description>Allow Scripts</Description>
 <Order>2</Order>
-<CommandLine>reg add HKLM\Software\Policies\Microsoft\Windows\Powershell /v Unrestricted /t REG_SZ ExecutionPolicy</CommandLine>
+<CommandLine>reg add HKLM\Software\Policies\Microsoft\Windows\Powershell /v ExecutionPolicy /t REG_SZ /d Unrestricted</CommandLine>
 <RequiresUserInput>false</RequiresUserInput>
 </SynchronousCommand>
 <SynchronousCommand wcm:action="add">
 <Description>Allow Scripts</Description>
 <Order>3</Order>
-<CommandLine>reg add HKLM\Software\Policies\Microsoft\Windows\Powershell /v 1 /t REG_DWORD EnableScripts</CommandLine>
+<CommandLine>reg add HKLM\Software\Policies\Microsoft\Windows\Powershell /v EnableScripts /t REG_DWORD /d 1</CommandLine>
 <RequiresUserInput>false</RequiresUserInput>
 </SynchronousCommand>
 <SynchronousCommand wcm:action="add">
