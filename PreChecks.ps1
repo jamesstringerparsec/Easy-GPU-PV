@@ -1,9 +1,11 @@
-﻿Function Get-DesktopPC
+﻿
+
+Function Get-DesktopPC
 {
  $isDesktop = $true
  if(Get-WmiObject -Class win32_systemenclosure | Where-Object { $_.chassistypes -eq 9 -or $_.chassistypes -eq 10 -or $_.chassistypes -eq 14})
    {
-   Write-Warning "Computer is a laptop. Laptop internal GPU's partitioned and assigned to VM may not work with Parsec." 
+   Write-Warning "Computer is a laptop. Laptop dedicated GPU's that are partitioned and assigned to VM may not work with Parsec." 
    Write-Warning "Thunderbolt 3 or 4 dock based GPU's may work"
    $isDesktop = $false }
  if (Get-WmiObject -Class win32_battery)
@@ -17,6 +19,7 @@ if ($build.CurrentBuild -ge 22000 -and ($($build.editionid -like 'Professional*'
     Return $true
     }
 Else {
+    Write-Warning "Only Windows 11 is supported"
     Return $false
     }
 }
@@ -27,6 +30,7 @@ if (Get-WindowsOptionalFeature -Online | Where-Object FeatureName -Like 'Microso
     Return $true
     }
 Else {
+    Write-Warning "You need to enable Virtualisation in your motherboard and then add the Hyper-V Windows Feature and reboot"
     Return $false
     }
 }
@@ -41,3 +45,21 @@ Function Get-WSLEnabled {
         }
 }
 
+Function Get-VMGpuPartitionAdapterFriendlyName {
+    $Devices = (Get-VMHostPartitionableGpu).Name
+    Foreach ($GPU in $Devices) {
+        $GPUParse = $GPU.Split('#')[1]
+        Get-WmiObject Win32_PNPSignedDriver | where {($_.HardwareID -eq "PCI\$GPUParse")} | select DeviceName -ExpandProperty DeviceName
+        }
+}
+
+If ((Get-DesktopPC) -and  (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled) -and !(Get-WSLEnabled)) {
+"System Compatible"
+"Printing a list of compatible GPUs...May take a second"
+"Copy the name of the GPU you want to share..."
+Get-VMGpuPartitionAdapterFriendlyName
+Read-Host -Prompt "Press Enter to Exit"
+}
+else {
+Read-Host -Prompt "Press Enter to Exit"
+}

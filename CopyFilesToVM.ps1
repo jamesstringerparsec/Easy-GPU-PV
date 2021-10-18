@@ -1,4 +1,19 @@
-﻿
+﻿$params = @{
+    VMName = "GPU-P"
+    SourcePath = "C:\Users\james\Downloads\Windows11_InsiderPreview_Client_x64_en-us__22000.iso"
+    Edition    = 6
+    VhdFormat  = "VHDX"
+    DiskLayout = "UEFI"
+    SizeBytes  = 40gb
+    MemoryAmount = 8GB
+    CPUCores = 4
+    UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
+    GPUName = "NVIDIA GeForce GTX 1050 Ti with Max-Q Design"
+    GPUResourceAllocationPercentage = 25
+    Team_ID = ""
+    Key = ""
+}
+
 
 Function Setup-ParsecInstall {
 param(
@@ -8,7 +23,7 @@ param(
 )
     $new = @()
 
-    $content = get-content "$PSScriptRoot" + "\user\psscripts.ini" 
+    $content = get-content "$PSScriptRoot\user\psscripts.ini" 
 
     foreach ($line in $content) {
         if ($line -like "0Parameters="){
@@ -19,7 +34,7 @@ param(
             $new += $line
             }
     }
-    Set-Content -Value $new -Path "$PSScriptRoot" + "\user\psscripts.ini"
+    Set-Content -Value $new -Path "$PSScriptRoot\user\psscripts.ini"
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup -ItemType directory | Out-Null}
@@ -278,13 +293,13 @@ function Convert-WindowsImage {
         [Parameter(ParameterSetName="SRC")]
         [Alias("TeamID")]
         [string]
-        [ValidateNotNullOrEmpty()]
+        #[ValidateNotNullOrEmpty()]
         [string]$Team_ID,
 
         [Parameter(ParameterSetName="SRC")]
-        [Alias("Team_Key")]
+        [Alias("Teamkey")]
         [string]
-        [ValidateNotNullOrEmpty()]
+        #[ValidateNotNullOrEmpty()]
         [string]$Key,
 
         [Parameter(ParameterSetName="SRC")]
@@ -4234,25 +4249,11 @@ param(
 }
 
 
-$params = @{
-    VMName = "GPU-P"
-    SourcePath = "C:\Users\james\Downloads\Windows11_InsiderPreview_Client_x64_en-us__22000.iso"
-    Edition    = 6
-    VhdFormat  = "VHDX"
-    DiskLayout = "UEFI"
-    SizeBytes  = 40gb
-    MemoryAmount = 8GB
-    CPUCores = 4
-    UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
-    GPUName = "NVIDIA GeForce GTX 1050 Ti with Max-Q Design"
-    GPUResourceAllocationPercentage = 25
-    Team_ID = "1mhDZ8RNbpGwFYwGYrMu9ewwcby"
-    Key = "ae31d6e201227b7caa977a0a9bce83652e67f29662d284c5e5c20db61e6d16d2"
-}
-
-
 New-GPUEnabledVM @params
 
 
-
 Start-VM -Name GPU-P
+
+Read-Host -Prompt "If all went well the Virtual Machine will have started - 
+you need to approve a certificate install inside the VM 
+via the Hyper-V viewer before connecting via Parsec"
