@@ -1,26 +1,25 @@
 # Easy-GPU-P
 A Project dedicated to making GPU Partitioning on Windows easier!
 
-WARNING: An extreme work in progress...
+WARNING: A work in progress...
 
-Requirements...Hyper V feature added to Windows 10, most likely your Windows 10 updated to 21h1, and a single Desktop NVIDIA GPU (not a laptop GPU).
+Prerequisits:
+* Windows 11 Pro or Enterprise
+* Desktop Computer with dedicated NVIDIA GPU, or Intel GPU - Laptops with NVIDIA GPUs are not supported at this time.
+* Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.
+* Windows 11 ISO (downloaded from here)[https://www.microsoft.com/en-us/software-download/windows11]
+* Virtualisation enabled in the motherboard and Hyper-V fully enabled on the Windows 11 OS (requires reboot)
+* Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell
 
-# How to use the file copier
-1. Create a VM WITHOUT adding a disk.  You must create a Win10 VM using the same Windows 10 Version that your host is currently running (Eg. If you're using 21H1, your client needs to VM needs to be 21H1).  
-2. Once you have created the VM without a disk, create a new disk in Hyper V, make sure it's FIXED Size! Make it at least 40GB to be safe.
-3. Edit the VM settings, disable checkpoints! 
-4. Add the Disk you created to the VM, along with a DVD drive pointing to the Win10 ISO file.
-5. You may need to reconfigure the boot order to put the dvd drive on top.
-6. Set up the VM with username and password etc, let it get all the way to the desktop
-7. Shutdown the VM
-8. Open Disk Management on the Hyper V host
-9. Mount the VHD that is associated with the VM
-10. Assign the largest partition of the mounted VHD a driver letter, F: for example if it's not already in use.
-11. Make sure you can view drive in file explorer, see the Windows\Program Files etc folders.
-12. Open Powershell ISE as Administrator on the Hyper V host
-13. Open the CopyFilesToVM.ps1 file and change the drive letter if required to match your mounted VHD
-14. Run the script
-15. Unassign the Drive letter using Disk Management, and dismount the VHD.  You may have to reboot the host in order for it to correctly dismount.
-16. Run the GPU Patition adding script in Powershell on the HyperV host
-17. ???
-18. Profit!
+Instructions
+1. Make sure your system meets the prerequisits.
+2. (Download the Repo and extract)[https://github.com/jamesstringerparsec/Easy-GPU-P/archive/refs/heads/main.zip] 
+3. Search your system for Powershell ISE and run as Administrator.
+4. In the extracted folder you downloaded, open PreChecks.ps1 in Powershell ISE.
+5. Run PreChecks.ps1 using the green play button and copy the GPU Listed (or the warnings that you need to fix)
+6. Open CopyFilesToVM.ps1 and edit the params section at the top of the file, you need to be careful about how much ram, storage and hard drive you give it as you system needs to have that available.  You also need to write the GPU name exactly how it appears in PreChecks.ps1.  Additionally, you need to provide a path to the Windows 11 ISO file.
+7. Run CopyFilesToVM.ps1 with your changes to the params section - this may take 5-10 minutes.
+8. View the VM in Hyper-V, once it gets to the Windows Desktop you will need to approve the certificate install request.
+9. Sign into Parsec on the VM.
+10. If you need audio, install Virtual Audio Cable (Google it).
+11. You should be good to go!
