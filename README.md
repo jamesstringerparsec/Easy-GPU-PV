@@ -7,13 +7,13 @@ Prerequisits:
 * Windows 11 Pro or Enterprise
 * Desktop Computer with dedicated NVIDIA GPU, or Intel GPU - Laptops with NVIDIA GPUs are not supported at this time.
 * Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.
-* Windows 11 ISO (downloaded from here)[https://www.microsoft.com/en-us/software-download/windows11]
+* Windows 11 ISO [downloaded from here](https://www.microsoft.com/en-us/software-download/windows11)
 * Virtualisation enabled in the motherboard and Hyper-V fully enabled on the Windows 11 OS (requires reboot)
 * Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell
 
 Instructions
 1. Make sure your system meets the prerequisits.
-2. (Download the Repo and extract)[https://github.com/jamesstringerparsec/Easy-GPU-P/archive/refs/heads/main.zip] 
+2. [Download the Repo and extract](https://github.com/jamesstringerparsec/Easy-GPU-P/archive/refs/heads/main.zip)
 3. Search your system for Powershell ISE and run as Administrator.
 4. In the extracted folder you downloaded, open PreChecks.ps1 in Powershell ISE.
 5. Run PreChecks.ps1 using the green play button and copy the GPU Listed (or the warnings that you need to fix)
