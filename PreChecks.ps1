@@ -19,7 +19,7 @@ if ($build.CurrentBuild -ge 22000 -and ($($build.editionid -like 'Professional*'
     Return $true
     }
 Else {
-    Write-Warning "Only Windows 11 is supported"
+    Write-Warning "Only Windows 11 Pro or Enterprise is supported"
     Return $false
     }
 }
