@@ -17,7 +17,7 @@ Instructions
 3. Search your system for Powershell ISE and run as Administrator.
 4. In the extracted folder you downloaded, open PreChecks.ps1 in Powershell ISE.
 5. Open and Run PreChecks.ps1 in Powershell ISE using the green play button and copy the GPU Listed (or the warnings that you need to fix).
-6. Open CopyFilesToVM.ps1 and edit the params section at the top of the file, you need to be careful about how much ram, storage and hard drive you give it as you system needs to have that available.  You also need to write the GPU name exactly how it appears in PreChecks.ps1.  Additionally, you need to provide a path to the Windows 11 ISO file.
+6. Open CopyFilesToVM.ps1 and edit the params section at the top of the file, you need to be careful about how much ram, storage and hard drive you give it as you system needs to have that available.  You also need to write the GPU name exactly how it appears in PreChecks.ps1.  Additionally, you need to provide the path to the Windows 11 ISO file you downloaded.
 7. Run CopyFilesToVM.ps1 with your changes to the params section - this may take 5-10 minutes.
 8. View the VM in Hyper-V, once it gets to the Windows Desktop you will need to approve the certificate install request.
 9. Sign into Parsec on the VM.
