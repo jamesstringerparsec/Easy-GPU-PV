@@ -23,3 +23,6 @@ Instructions
 9. Sign into Parsec on the VM.
 10. If you need audio, install Virtual Audio Cable (Google it).
 11. You should be good to go!
+
+
+Thanks to https://github.com/tabs-not-spaces/Hyper-ConvertImage for creating an updated version of https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage that is compatible with Windows 10 and 11.
