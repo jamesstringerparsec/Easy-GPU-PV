@@ -46,7 +46,6 @@ param(
     Copy-Item -Path $psscriptroot\User\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
     Copy-Item -Path $psscriptroot\Machine\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts
     Copy-Item -Path $psscriptroot\Machine\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup
-    Copy-Item -Path $psscriptroot\parsecpublic.cer -Destination $DriveLetter\ProgramData\Easy-GPU-P
 }
 
 
