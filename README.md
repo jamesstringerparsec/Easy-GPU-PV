@@ -26,3 +26,6 @@ Instructions
 
 
 Thanks to https://github.com/tabs-not-spaces/Hyper-ConvertImage for creating an updated version of https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage that is compatible with Windows 10 and 11.
+
+Notes:
+You must connect a physical display to the GPU (or HDMI dongle) in order for Parsec to work.
