@@ -61,6 +61,15 @@ $drivers = Get-WmiObject Win32_PNPSignedDriver | where {$_.DeviceName -eq "$GPUN
 
 New-Item -ItemType Directory -Path "$DriveLetter\windows\system32\HostDriverStore" -Force | Out-Null
 
+#copy directory associated with sys file 
+$service = Get-PnpDevice | Where-Object {$_.Name -eq "$GPUName"} | Select-Object Service -ExpandProperty Service
+$servicePath = (Get-WmiObject Win32_SystemDriver | Where-Object {$_.Name -eq "$service"}).Pathname
+                $ServiceDriverDir = $servicepath.split('\')[0..5] -join('\')
+                $ServicedriverDest = ("$driveletter" + "\" + $($servicepath.split('\')[1..5] -join('\'))).Replace("DriverStore","HostDriverStore")
+                if (!(Test-Path $ServicedriverDest)) {
+                Copy-item -path "$ServiceDriverDir" -Destination "$ServicedriverDest" -Recurse
+                }
+
 # Initialize the list of detected driver packages as an array
 $DriverFolders = @()
 foreach ($d in $drivers) {
@@ -80,19 +89,21 @@ foreach ($d in $drivers) {
             $InfItem = Get-Item -Path $path2
             $Version = $InfItem.VersionInfo.FileVersion
             If ($path2 -like "c:\windows\system32\driverstore\*") {
-                $ParseDestination = $path2.Replace("c:","$driveletter").Replace("driverstore","HostDriverStore")
-                $Destination = $ParseDestination.SubString(0, $ParseDestination.LastIndexOf('\'))
-                New-Item -ItemType Directory -Path "$Destination" -Force | Out-Null
-                Copy-Item $path2 -Destination $Destination -Force 
-                
+                $DriverDir = $path2.split('\')[0..5] -join('\')
+                $driverDest = ("$driveletter" + "\" + $($path2.split('\')[1..5] -join('\'))).Replace("driverstore","HostDriverStore")
+                if (!(Test-Path $driverDest)) {
+                Copy-item -path "$DriverDir" -Destination "$driverDest" -Recurse
+                }
             }
             Else {
                 $ParseDestination = $path2.Replace("c:", "$driveletter")
                 $Destination = $ParseDestination.Substring(0, $ParseDestination.LastIndexOf('\'))
-                if (!$(Get-Item -Path $Destination -ErrorAction SilentlyContinue).Name) {
+                if (!$(Test-Path -Path $Destination)) {
                     New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+                    "New Item $Destination"
                     }
                 Copy-Item $path2 -Destination $Destination -Force
+                "Copy Item $Path2 to $Destination"
                 
             }
 
