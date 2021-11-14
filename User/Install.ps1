@@ -43,6 +43,7 @@ if (!(Test-Path C:\ProgramData\Easy-GPU-P\second.txt)) {
 #if(((Get-ChildItem -Path Cert:\CurrentUser\TrustedPublisher).DnsNameList.Unicode -like "Parsec Cloud, Inc.")) {
     if (!(Get-WmiObject Win32_VideoController | Where-Object name -like "Parsec Virtual Display Adapter")) {
     cmd /c C:\ProgramFiles\Easy-GPU-P\cert.bat
+    Get-PnpDevice | Where-Object {$_.friendlyname -like "Microsoft Hyper-V Video" -and $_.status -eq "OK"} | Disable-PnpDevice -confirm:$false
     Start-Process "C:\Users\$env:USERNAME\Downloads\parsec-vdd.exe" -ArgumentList "/silent"
     }
 
