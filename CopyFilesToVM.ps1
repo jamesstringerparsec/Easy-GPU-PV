@@ -1,6 +1,6 @@
 ﻿$params = @{
     VMName = "GPU-P"
-    SourcePath = "C:\Users\james\Downloads\Windows11_InsiderPreview_Client_x64_en-us__22000.iso"
+    SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"
     Edition    = 6
     VhdFormat  = "VHDX"
     DiskLayout = "UEFI"
@@ -8,7 +8,7 @@
     MemoryAmount = 8GB
     CPUCores = 4
     UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
-    GPUName = "NVIDIA GeForce GTX 1050 Ti with Max-Q Design"
+    GPUName = "AMD Radeon RX 5700 XT"
     GPUResourceAllocationPercentage = 25
     Team_ID = ""
     Key = ""
@@ -4253,6 +4253,8 @@ param(
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" | Out-Null
     Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
     Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false
+    Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
+    Enable-VMTPM -VMName $VMName 
     Add-VMDvdDrive -VMName $VMName -Path $SourcePath
     Set-VMFirmware -VMName $VMName -BootOrder $((Get-VMFirmware -VMName $VMName).BootOrder.Device | Where-Object name -like "DVD*"), $((Get-VMFirmware -VMName $VMName).BootOrder.Device | Where-Object name -like "Hard Drive*"), $((Get-VMFirmware -VMName $VMName).BootOrder.Device | Where-Object name -like "Network Adapter*")
     Assign-VMGPUPartitionAdapter -GPUName $GPUName -VMName $VMName -GPUResourceAllocationPercentage $GPUResourceAllocationPercentage
