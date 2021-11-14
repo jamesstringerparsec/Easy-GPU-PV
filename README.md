@@ -39,4 +39,4 @@ Thanks to [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertI
 
 ### Notes:  
 You must connect a physical display to the GPU (or HDMI dongle) in order for Parsec to work.  
-Instance password is by default CoolPassword!:) but you can change it inside the autounattend.xml file for now, it's in two areas, so make sure to replace it in both.  
+Instance password is CoolPassword!:) but you can change it inside the autounattend.xml file for now, it's in two areas, so make sure to replace it in both.  
