@@ -37,5 +37,4 @@ WARNING: A work in progress...
 Thanks to [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
 
 ### Notes:  
-You must connect a physical display to the GPU (or HDMI dongle) in order for Parsec to work.  
 VM password is CoolPassword!:) but you can change it inside the autounattend.xml file for now, it's in two areas, so make sure to replace it in both.  
