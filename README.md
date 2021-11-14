@@ -6,7 +6,7 @@ GPU-P allows you to partition your systems dedicated or integrated GPU and assig
 Easy-GPU-P aims to make this easier by automating the steps required to get a GPU-P VM up and running.  
 Easy-GPU-P does the following...  
 1) Creates a VM of your choosing
-2) Installs Windows 11  
+2) Automatically Installs Windows 11 to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
 4) Installs Parsec to the VM  
 
