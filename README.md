@@ -1,9 +1,9 @@
 # Easy-GPU-P
-A Project dedicated to making GPU Partitioning on Windows Hyper-V easier! Also known as GPU Paravirtualization.  
+A Project dedicated to making GPU Partitioning on Windows Hyper-V easier! Also known as GPU Paravirtualization (GPU-PV).  
 GPU-P allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  
 
 Easy-GPU-P aims to make this easier by automating the steps required to get a GPU-P VM up and running.  
-Easy GPU P does the following...  
+Easy-GPU-P does the following...  
 1) Creates a VM of your choosing
 2) Installs Windows 11  
 3) Partitions your GPU of choice and copies the required driver files to the VM  
@@ -12,7 +12,7 @@ Easy GPU P does the following...
 
 WARNING: A work in progress...
 
-Prerequisits:
+### Prerequisits:
 * Windows 11 Pro or Enterprise
 * Desktop Computer with dedicated NVIDIA/AMD GPU or Integrated Intel GPU - Laptops with NVIDIA GPUs are not supported at this time, but Intel integrated GPUs work on laptops.  GPU must support hardware video encoding (NVIDIA NVENC, Intel Quicksync or AMD AMF).
 * Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.
@@ -20,7 +20,7 @@ Prerequisits:
 * Virtualisation enabled in the motherboard and Hyper-V fully enabled on the Windows 11 OS (requires reboot)
 * Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell
 
-Instructions
+### Instructions
 1. Make sure your system meets the prerequisits.
 2. [Download the Repo and extract.](https://github.com/jamesstringerparsec/Easy-GPU-P/archive/refs/heads/main.zip)
 3. Search your system for Powershell ISE and run as Administrator.
@@ -34,7 +34,7 @@ Instructions
 11. You should be good to go!
 
 
-Thanks to https://github.com/tabs-not-spaces/Hyper-ConvertImage for creating an updated version of https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage that is compatible with Windows 10 and 11.
+Thanks to [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
 
-Notes:
+### Notes:  
 You must connect a physical display to the GPU (or HDMI dongle) in order for Parsec to work.
