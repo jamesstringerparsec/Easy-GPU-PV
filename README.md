@@ -1,6 +1,7 @@
 # Easy-GPU-P
 A Project dedicated to making GPU Partitioning on Windows Hyper-V easier! Also known as GPU Paravirtualization (GPU-PV).  
-GPU-P allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  
+
+GPU-P allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  It's the same technology that is used in WSL2, and Windows Sandbox.  
 
 Easy-GPU-P aims to make this easier by automating the steps required to get a GPU-P VM up and running.  
 Easy-GPU-P does the following...  
