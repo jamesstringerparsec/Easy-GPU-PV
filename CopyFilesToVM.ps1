@@ -4280,7 +4280,6 @@ param(
     Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
     Enable-VMTPM -VMName $VMName 
     Add-VMDvdDrive -VMName $VMName -Path $SourcePath
-    Set-VMFirmware -VMName $VMName -BootOrder $((Get-VMFirmware -VMName $VMName).BootOrder.Device | Where-Object name -like "DVD*"), $((Get-VMFirmware -VMName $VMName).BootOrder.Device | Where-Object name -like "Hard Drive*"), $((Get-VMFirmware -VMName $VMName).BootOrder.Device | Where-Object name -like "Network Adapter*")
     Assign-VMGPUPartitionAdapter -GPUName $GPUName -VMName $VMName -GPUResourceAllocationPercentage $GPUResourceAllocationPercentage
 }
 
