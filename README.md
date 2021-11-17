@@ -48,7 +48,7 @@ WARNING: A work in progress...
   ```Team_ID = ""``` - The Parsec for Teams ID if you are a Parsec for Teams Subscriber  
   ```Key = ""``` - The Parsec for Teams Secret Key if you are a Parsec for Teams Subscriber  
   ```Username = "GPUVM"``` - The VM Windows Username, do not include special characters  
-  ```Password = "CoolestPassword!"``` - The VM Windows Password
+  ```Password = "CoolestPassword!"``` - The VM Windows Password  
   ```Autologon = "true"```- If you want the VM to automatically login to the Windows Desktop
 
 
