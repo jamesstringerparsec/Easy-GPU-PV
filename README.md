@@ -33,6 +33,24 @@ WARNING: A work in progress...
 9. Sign into Parsec on the VM.
 10. You should be good to go!
 
+### Values
+  ```VMName = "GPUP"``` - Name of VM in Hyper-V and the computername / hostname  
+  ```SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"``` - path to Windows 11 ISO on your host   
+  ```Edition    = 6``` - Leave as 6, this means Windows 11 Pro  
+  ```VhdFormat  = "VHDX"``` - Leave this value alone  
+  ```DiskLayout = "UEFI"``` - Leave this value alone  
+  ```SizeBytes  = 40gb``` - Disk size, in this case 40GB  
+  ```MemoryAmount = 8GB``` - Memory size, in this case 8GB  
+  ```CPUCores = 4``` - CPU Cores you want to give VM, in this case 4   
+  ```UnattendPath = "$PSScriptRoot"+"\autounattend.xml"``` -Leave this value alone  
+  ```GPUName = "NVIDIA Geforce RTX 2060 SUPER"``` - The exact name of the GPU you want to share with the VM   
+  ```GPUResourceAllocationPercentage = 50``` - Percentage of the GPU you want to share with the VM   
+  ```Team_ID = ""``` - The Parsec for Teams ID if you are a Parsec for Teams Subscriber  
+  ```Key = ""``` - The Parsec for Teams Secret Key if you are a Parsec for Teams Subscriber  
+  ```Username = "GPUVM"``` - The VM Windows Username, do not include special characters  
+  ```Password = "CoolestPassword!"``` - The VM Windows Password
+  ```Autologon = "true"```- If you want the VM to automatically login to the Windows Desktop
+
 
 Thanks to [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
 
