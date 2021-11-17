@@ -1,19 +1,21 @@
 ﻿$params = @{
-    VMName = "GPU-P"
-    SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"
-    Edition    = 6
+    VMName = "GPUP"
+    SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso" 
+    Edition    = 6 
     VhdFormat  = "VHDX"
     DiskLayout = "UEFI"
     SizeBytes  = 40gb
     MemoryAmount = 8GB
     CPUCores = 4
     UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
-    GPUName = "NVIDIA Geforce RTX 2060 SUPER"
-    GPUResourceAllocationPercentage = 50
-    Team_ID = ""
+    GPUName = "NVIDIA Geforce RTX 2060 SUPER" 
+    GPUResourceAllocationPercentage = 50 
+    Team_ID = "" 
     Key = ""
+    Username = "GPUVM"
+    Password = "CoolestPassword!"
+    Autologon = "true"
 }
-
 
 Function Setup-ParsecInstall {
 param(
@@ -46,7 +48,6 @@ param(
     Copy-Item -Path $psscriptroot\Machine\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts
     Copy-Item -Path $psscriptroot\Machine\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup
 }
-
 
 Function Add-VMGpuPartitionAdapterFiles {
 param(
@@ -4213,6 +4214,26 @@ VirtualHardDisk
     Add-Type -TypeDefinition $code -ReferencedAssemblies "System.Xml","System.Linq","System.Xml.Linq" -ErrorAction SilentlyContinue
 }
 
+Function Modify-AutoUnattend {
+param (
+[string]$username,
+[string]$password,
+[string]$autologon,
+[string]$hostname,
+[string]$UnattendPath
+    )
+    [xml]$xml = get-content -path $UnattendPath
+    ($xml.unattend.settings.component | where-object {$_.autologon}).autologon.password.value = $password
+    ($xml.unattend.settings.component | where-object {$_.autologon}).autologon.username = $username
+    ($xml.unattend.settings.component | where-object {$_.autologon}).autologon.enabled = $autologon
+    ($xml.unattend.settings.component | where-object {$_.UserAccounts}).UserAccounts.LocalAccounts.localaccount.Group = "Administrators"
+    ($xml.unattend.settings.component | where-object {$_.UserAccounts}).UserAccounts.LocalAccounts.localaccount.Name = $username
+    ($xml.unattend.settings.component | where-object {$_.UserAccounts}).UserAccounts.LocalAccounts.localaccount.DisplayName = $username
+    ($xml.unattend.settings.component | where-object {$_.UserAccounts}).UserAccounts.LocalAccounts.localaccount.Password.Value = $password
+    ($xml.unattend.settings.component | where-object {$_.Computername}).Computername = $hostname
+    $xml.Save("$UnattendPath")
+}
+
 function Assign-VMGPUPartitionAdapter {
 param(
 [string]$VMName,
@@ -4245,13 +4266,17 @@ param(
 [float]$GPUResourceAllocationPercentage,
 [string]$SourcePath,
 [string]$Team_ID,
-[string]$Key
+[string]$Key,
+[string]$username,
+[string]$password,
+[string]$autologon
 )
-    
+    Modify-AutoUnattend -username "$username" -password "$password" -autologon $autologon -hostname $VMName -UnattendPath $UnattendPath
     Convert-WindowsImage -SourcePath $SourcePath -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -GPUName $GPUName -Team_ID $Team_ID -Key $Key| Out-Null
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" | Out-Null
     Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
-    Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false
+    Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
+    Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
     Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
     Enable-VMTPM -VMName $VMName 
     Add-VMDvdDrive -VMName $VMName -Path $SourcePath
@@ -4259,11 +4284,9 @@ param(
     Assign-VMGPUPartitionAdapter -GPUName $GPUName -VMName $VMName -GPUResourceAllocationPercentage $GPUResourceAllocationPercentage
 }
 
-
 New-GPUEnabledVM @params
 
-
-Start-VM -Name GPU-P
+Start-VM -Name $params.VMName
 
 Read-Host -Prompt "If all went well the Virtual Machine will have started - 
 you need to approve a certificate install inside the VM 
