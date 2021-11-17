@@ -55,4 +55,4 @@ WARNING: A work in progress...
 Thanks to [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
 
 ### Notes:  
-VM password is CoolPassword!:) but you can change it inside the autounattend.xml file for now, it's in two areas, so make sure to replace it in both.  
+This script will fail in newer versions of Powershell due to the add-type function call, but it will work correctly in Windows ISE running as Administrator.
