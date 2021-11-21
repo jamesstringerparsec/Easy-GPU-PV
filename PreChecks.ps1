@@ -53,7 +53,7 @@ Function Get-VMGpuPartitionAdapterFriendlyName {
         }
 }
 
-If ((Get-DesktopPC) -and  (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled) -and !(Get-WSLEnabled)) {
+If ((Get-DesktopPC) -and  (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) {
 "System Compatible"
 "Printing a list of compatible GPUs...May take a second"
 "Copy the name of the GPU you want to share..."
