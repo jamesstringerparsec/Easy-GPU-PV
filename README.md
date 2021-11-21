@@ -25,11 +25,11 @@ WARNING: A work in progress...
 1. Make sure your system meets the prerequisits.
 2. [Download the Repo and extract.](https://github.com/jamesstringerparsec/Easy-GPU-P/archive/refs/heads/main.zip)
 3. Search your system for Powershell ISE and run as Administrator.
-4. In the extracted folder you downloaded, open PreChecks.ps1 in Powershell ISE (It must be Powershell ISE or Powershell 5.X)
+4. In the extracted folder you downloaded, open PreChecks.ps1 in Powershell ISE.
 5. Open and Run PreChecks.ps1 in Powershell ISE using the green play button and copy the GPU Listed (or the warnings that you need to fix).
 6. Open CopyFilesToVM.ps1 and edit the params section at the top of the file, you need to be careful about how much ram, storage and hard drive you give it as you system needs to have that available.  You also need to write the GPU name exactly how it appears in PreChecks.ps1.  Additionally, you need to provide the path to the Windows 11 ISO file you downloaded.
 7. Run CopyFilesToVM.ps1 with your changes to the params section - this may take 5-10 minutes.
-8. View the VM in Hyper-V, once it gets to the Windows Desktop you will need to approve the certificate install request for Parsec and Virtual Audio Cable
+8. View the VM in Hyper-V, once it gets to the Windows Desktop you will need to approve the certificate install request for Parsec and Virtual Audio Cable.
 9. Sign into Parsec on the VM.
 10. You should be good to go!
 
@@ -54,8 +54,7 @@ WARNING: A work in progress...
 
 Thanks to [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
 
-### Notes:  
-- This script will fail in newer versions of Powershell due to the add-type function call, but it will work correctly in Powershell ISE running as Administrator.   
+### Notes:    
 - A display or HDMI dummy dongle must be plugged into the GPU to allow Parsec to capture the screen.  
 - The screen may go black for times up to 10 seconds in sitautions when UAC prompts appear, applications go in and out of fullscreen and when you switch between video codecs in Parsec - not really sure why this happens, it's unique to GPU-P machines and seems to recover faster at 1280x720.
 - Vulkan renderer is unavilable and GL games may or may not work.
