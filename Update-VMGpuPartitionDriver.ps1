@@ -67,7 +67,7 @@ foreach ($d in $drivers) {
 
 }
 
-$VM = Get-VM -VMName "GPUP"
+$VM = Get-VM -VMName $VMName
 $VHD = Get-VHD -VMId $VM.VMId
 
 If ($VM.state -eq "Running") {
