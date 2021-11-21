@@ -4210,8 +4210,13 @@ VirtualHardDisk
 #endregion VHD Interop
 }
 "@
-
+    #ifdef for Powershell V7 or greater which looks for assemblies in same path as powershell dll path
+    if ($PSVersionTable.psversion.Major -ge 7){        
+    Add-Type -TypeDefinition $code -ErrorAction SilentlyContinue 
+    }
+    else {
     Add-Type -TypeDefinition $code -ReferencedAssemblies "System.Xml","System.Linq","System.Xml.Linq" -ErrorAction SilentlyContinue
+    }
 }
 
 Function Modify-AutoUnattend {
