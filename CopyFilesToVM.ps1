@@ -4245,8 +4245,9 @@ param(
 [string]$GPUName,
 [decimal]$GPUResourceAllocationPercentage = 100
 )
+    $PartitionableGPUList = Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2" 
     $DeviceID = ((Get-WmiObject Win32_PNPSignedDriver | where {($_.Devicename -eq "$GPUNAME")}).hardwareid).split('\')[1]
-    $DevicePathName = (Get-VMHostPartitionableGpu | Where-Object name -like "*$deviceid*").Name
+    $DevicePathName = ($PartitionableGPUList | Where-Object name -like "*$deviceid*").Name
     Add-VMGpuPartitionAdapter -VMName $VMName -InstancePath $DevicePathName
     [float]$devider = [math]::round($(100 / $GPUResourceAllocationPercentage),2)
     Set-VMGpuPartitionAdapter -VMName $VMName -MinPartitionVRAM 0 -MaxPartitionVRAM 1000000000 -OptimalPartitionVRAM ([math]::round($(1000000000 / $devider)))
