@@ -15,11 +15,11 @@ Function Get-DesktopPC
 
 Function Get-WindowsCompatibleOS {
 $build = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
-if ($build.CurrentBuild -ge 22000 -and ($($build.editionid -like 'Professional*') -or $($build.editionid -like 'Enterprise*'))) {
+if ($build.CurrentBuild -ge 19041 -and ($($build.editionid -like 'Professional*') -or $($build.editionid -like 'Enterprise*'))) {
     Return $true
     }
 Else {
-    Write-Warning "Only Windows 11 Pro or Enterprise is supported"
+    Write-Warning "Only Windows 10 20H1 or Windows 11 (Pro or Enterprise) is supported"
     Return $false
     }
 }
