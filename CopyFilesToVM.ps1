@@ -4277,6 +4277,7 @@ param(
     Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
     Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
     Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
+    Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
     Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
     Enable-VMTPM -VMName $VMName 
     Add-VMDvdDrive -VMName $VMName -Path $SourcePath
