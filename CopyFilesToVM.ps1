@@ -4302,7 +4302,13 @@ param(
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" -Version $MaxAvailableVersion | Out-Null
     Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
     Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
-    Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
+    $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | select Manufacturer
+    $BuildVer = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+    if (($BuildVer.CurrentBuild -lt 22000) -and ($CPUManufacturer -eq "AuthenticAMD")) {
+        }
+    Else {
+        Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
+        }
     Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
     Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
     Enable-VMTPM -VMName $VMName 
