@@ -11,6 +11,16 @@ param(
 [string]$GPUName
 )
 
+If (!($DriveLetter -like "*:*")) {
+    $DriveLetter = $Driveletter + ":"
+    }
+
+If ($GPUName -eq "AUTO") {
+    $PartitionableGPUList = Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2" 
+    $DevicePathName = $PartitionableGPUList.Name | Select-Object -First 1
+    $GPUName = Get-PnpDevice | Where-Object {$_.DeviceID -like "*$($DevicePathName.Substring(8,16))*"} | Select-Object FriendlyName -ExpandProperty FriendlyName
+    }
+
 # Get Third Party drivers used, that are not provided by Microsoft and presumably included in the OS
 $drivers = Get-WmiObject Win32_PNPSignedDriver | where {$_.DeviceName -eq "$GPUName"}
 
@@ -85,7 +95,7 @@ While ($VM.State -ne "Off") {
     }
 
 "Mounting Drive..."
-$DriveLetter = (Mount-VHD -Path $VHD.Path -PassThru | Get-Disk | Get-Partition | Get-Volume | Where-Object {$_.DriveLetter} | ForEach-Object DriveLetter) + ":"
+$DriveLetter = (Mount-VHD -Path $VHD.Path -PassThru | Get-Disk | Get-Partition | Get-Volume | Where-Object {$_.DriveLetter} | ForEach-Object DriveLetter)
 
 "Copying GPU Files - this could take a while..."
 Add-VMGPUPartitionAdapterFiles -hostname $Hostname -DriveLetter $DriveLetter -GPUName $GPUName

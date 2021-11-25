@@ -4,11 +4,11 @@
     Edition    = 6
     VhdFormat  = "VHDX"
     DiskLayout = "UEFI"
-    SizeBytes  = 40gb
+    SizeBytes  = 40GB
     MemoryAmount = 8GB
     CPUCores = 4
     UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
-    GPUName = "NVIDIA Geforce RTX 2060 SUPER"
+    GPUName = "AUTO"
     GPUResourceAllocationPercentage = 50
     Team_ID = ""
     Key = ""
@@ -55,6 +55,16 @@ param(
 [string]$DriveLetter,
 [string]$GPUName
 )
+
+If (!($DriveLetter -like "*:*")) {
+    $DriveLetter = $Driveletter + ":"
+    }
+
+If ($GPUName -eq "AUTO") {
+    $PartitionableGPUList = Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2" 
+    $DevicePathName = $PartitionableGPUList.Name | Select-Object -First 1
+    $GPUName = Get-PnpDevice | Where-Object {$_.DeviceID -like "*$($DevicePathName.Substring(8,16))*"} | Select-Object FriendlyName -ExpandProperty FriendlyName
+    }
 
 # Get Third Party drivers used, that are not provided by Microsoft and presumably included in the OS
 $drivers = Get-WmiObject Win32_PNPSignedDriver | where {$_.DeviceName -eq "$GPUName"}
@@ -4245,11 +4255,20 @@ param(
 [string]$GPUName,
 [decimal]$GPUResourceAllocationPercentage = 100
 )
+    
     $PartitionableGPUList = Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2" 
-    $DeviceID = ((Get-WmiObject Win32_PNPSignedDriver | where {($_.Devicename -eq "$GPUNAME")}).hardwareid).split('\')[1]
-    $DevicePathName = ($PartitionableGPUList | Where-Object name -like "*$deviceid*").Name
-    Add-VMGpuPartitionAdapter -VMName $VMName -InstancePath $DevicePathName
+    if ($GPUName -eq "AUTO") {
+        $DevicePathName = $PartitionableGPUList.Name[0]
+        Add-VMGpuPartitionAdapter -VMName $VMName
+        }
+    else {
+        $DeviceID = ((Get-WmiObject Win32_PNPSignedDriver | where {($_.Devicename -eq "$GPUNAME")}).hardwareid).split('\')[1]
+        $DevicePathName = ($PartitionableGPUList | Where-Object name -like "*$deviceid*").Name
+        Add-VMGpuPartitionAdapter -VMName $VMName -InstancePath $DevicePathName
+        }
+
     [float]$devider = [math]::round($(100 / $GPUResourceAllocationPercentage),2)
+
     Set-VMGpuPartitionAdapter -VMName $VMName -MinPartitionVRAM 0 -MaxPartitionVRAM 1000000000 -OptimalPartitionVRAM ([math]::round($(1000000000 / $devider)))
     Set-VMGPUPartitionAdapter -VMName $VMName -MinPartitionEncode 0 -MaxPartitionEncode 18446744073709551615 -OptimalPartitionEncode ([math]::round($(18446744073709551615 / $devider)))
     Set-VMGpuPartitionAdapter -VMName $VMName -MinPartitionDecode 0 -MaxPartitionDecode 1000000000 -OptimalPartitionDecode ([math]::round($(1000000000 / $devider)))
@@ -4278,7 +4297,7 @@ param(
 [string]$autologon
 )
     Modify-AutoUnattend -username "$username" -password "$password" -autologon $autologon -hostname $VMName -UnattendPath $UnattendPath
-    Convert-WindowsImage -SourcePath $SourcePath -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -GPUName $GPUName -Team_ID $Team_ID -Key $Key| Out-Null
+    Convert-WindowsImage -SourcePath $SourcePath -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes| Out-Null
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" | Out-Null
     Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
     Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
