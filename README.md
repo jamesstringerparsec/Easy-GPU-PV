@@ -49,7 +49,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
   ```MemoryAmount = 8GB``` - Memory size, in this case 8GB  
   ```CPUCores = 4``` - CPU Cores you want to give VM, in this case 4   
   ```UnattendPath = "$PSScriptRoot"+"\autounattend.xml"``` -Leave this value alone  
-  ```GPUName = "NVIDIA Geforce RTX 2060 SUPER"``` - The exact name of the GPU you want to share with the VM   
+  ```GPUName = "AUTO"``` - Auto selects the first available GPU P. On Windows 11 you may also use the exact name of the GPU you want to share with the VM in multi GPU situations (GPU selection is not available in Windows 10) 
   ```GPUResourceAllocationPercentage = 50``` - Percentage of the GPU you want to share with the VM   
   ```Team_ID = ""``` - The Parsec for Teams ID if you are a Parsec for Teams Subscriber  
   ```Key = ""``` - The Parsec for Teams Secret Key if you are a Parsec for Teams Subscriber  
