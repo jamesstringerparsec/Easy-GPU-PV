@@ -14,11 +14,11 @@ Easy-GPU-P does the following...
 WARNING: A work in progress...
 
 ### Prerequisites:
-* Wimndows 10 20H1+ Pro or Enterprise  or Windows 11 Pro or Enterprise
+* Windows 10 20H1+ Pro or Enterprise  or Windows 11 Pro or Enterprise
 * Desktop Computer with dedicated NVIDIA/AMD GPU or Integrated Intel GPU - Laptops with NVIDIA GPUs are not supported at this time, but Intel integrated GPUs work on laptops.  GPU must support hardware video encoding (NVIDIA NVENC, Intel Quicksync or AMD AMF).
 * Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.
 * Latest Windows 10 ISO [downloaded from here](https://www.microsoft.com/en-gb/software-download/windows10ISO) / Windows 11 ISO [downloaded from here](https://www.microsoft.com/en-us/software-download/windows11)
-* Virtualisation enabled in the motherboard and Hyper-V fully enabled on the Windows 11 OS (requires reboot)
+* Virtualization enabled in the motherboard and Hyper-V fully enabled on the Windows 11 OS (requires reboot)
 * Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell
 
 ### Instructions
