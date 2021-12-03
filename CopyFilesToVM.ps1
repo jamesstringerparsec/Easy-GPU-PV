@@ -63,7 +63,7 @@ If (!($DriveLetter -like "*:*")) {
 If ($GPUName -eq "AUTO") {
     $PartitionableGPUList = Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2" 
     $DevicePathName = $PartitionableGPUList.Name | Select-Object -First 1
-	$GPUName = Get-PnpDevice | Where-Object {$_.DeviceID -like "*$($DevicePathName.Substring(8,16))*"}  |Where-Object {$_.Status -eq "OK"} |  Select-Object FriendlyName -ExpandProperty FriendlyName |select-object -first 1
+	$GPUName = Get-PnpDevice | Where-Object {$_.DeviceID -like "*$($DevicePathName.Substring(8,16))*"} |Where-Object {$_.Status -eq "OK"} |  Select-Object FriendlyName -ExpandProperty FriendlyName |select-object -first 1
     }
 
 # Get Third Party drivers used, that are not provided by Microsoft and presumably included in the OS
