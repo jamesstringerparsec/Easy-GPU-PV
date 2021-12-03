@@ -4246,6 +4246,15 @@ param (
     ($xml.unattend.settings.component | where-object {$_.UserAccounts}).UserAccounts.LocalAccounts.localaccount.DisplayName = $username
     ($xml.unattend.settings.component | where-object {$_.UserAccounts}).UserAccounts.LocalAccounts.localaccount.Password.Value = $password
     ($xml.unattend.settings.component | where-object {$_.Computername}).Computername = $hostname
+    $xml.unattend.settings.component[0].UserLocale = (get-winsystemlocale).Name
+    $xml.unattend.settings.component[4].UserLocale = (get-winsystemlocale).Name
+    $xml.unattend.settings.component[0].SystemLocale = (get-winsystemlocale).Name
+    $xml.unattend.settings.component[4].SystemLocale = (get-winsystemlocale).Name
+    $xml.unattend.settings.component[0].UILanguage = (Get-Culture).Name
+    $xml.unattend.settings.component[4].UILanguage = (Get-Culture).Name
+    $xml.unattend.settings.component[0].UILanguageFallback   = (Get-Culture).Name
+    $xml.unattend.settings.component[4].UILanguageFallback   = (Get-Culture).Name
+    $xml.unattend.settings.component[8].TimeZone = (Get-TimeZone).Id
     $xml.Save("$UnattendPath")
 }
 
