@@ -20,9 +20,7 @@ WARNING: A work in progress...
 * Latest Windows 10 ISO [downloaded from here](https://www.microsoft.com/en-gb/software-download/windows10ISO) / Windows 11 ISO [downloaded from here](https://www.microsoft.com/en-us/software-download/windows11)
   * An .ISO File Created by using the Microsoft MediaCreationTool will not work with Easy-GPU-P
   * If you are not given the option to directly download an .ISO file from the web page, try using Rufus Portable by following the [guide in this link](https://www.nextofwindows.com/downloading-windows-10-iso-images-using-rufus).
-
     * When running Rufus Portable, click Yes when asked if you want to check for updates.
-
 * Virtualization enabled in the motherboard and Hyper-V fully enabled on the Windows 11 OS (requires reboot)
 * Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell
 
