@@ -8,8 +8,7 @@ Easy-GPU-P does the following...
 1) Creates a VM of your choosing
 2) Automatically Installs Windows 11 to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
-4) Installs Parsec to the VM  
-
+4) Installs [Parsec](https://parsec.app) to the VM, you can use Parsec for free non commercially. To use Parsec commercially, sign up to a [Parsec For Teams](https://parsec.app/teams) account  
 
 WARNING: A work in progress...
 
