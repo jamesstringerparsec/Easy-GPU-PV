@@ -18,7 +18,7 @@ WARNING: A work in progress...
 * Desktop Computer with dedicated NVIDIA/AMD GPU or Integrated Intel GPU - Laptops with NVIDIA GPUs are not supported at this time, but Intel integrated GPUs work on laptops.  GPU must support hardware video encoding (NVIDIA NVENC, Intel Quicksync or AMD AMF).
 * Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.
 * Latest Windows 10 ISO [downloaded from here](https://www.microsoft.com/en-gb/software-download/windows10ISO) / Windows 11 ISO [downloaded from here](https://www.microsoft.com/en-us/software-download/windows11)
-* Virtualisation enabled in the motherboard and Hyper-V fully enabled on the Windows 11 OS (requires reboot)
+* Virtualisation enabled in the motherboard and [Hyper-V fully enabled](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v) on the Windows 10/ 11 OS (requires reboot)  
 * Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell
 
 ### Instructions
@@ -41,7 +41,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 
 ### Values
   ```VMName = "GPUP"``` - Name of VM in Hyper-V and the computername / hostname  
-  ```SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"``` - path to Windows 11 ISO on your host   
+  ```SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"``` - path to Windows 10/ 11 ISO on your host   
   ```Edition    = 6``` - Leave as 6, this means Windows 11 Pro  
   ```VhdFormat  = "VHDX"``` - Leave this value alone  
   ```DiskLayout = "UEFI"``` - Leave this value alone  
