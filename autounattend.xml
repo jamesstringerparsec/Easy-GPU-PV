@@ -147,6 +147,12 @@
         <SkipMachineOOBE>true</SkipMachineOOBE>
         <ProtectYourPC>1</ProtectYourPC>
       </OOBE>
+      <Display>
+        <ColorDepth>32</ColorDepth>
+        <HorizontalResolution>1920</HorizontalResolution>
+        <RefreshRate>60</RefreshRate>
+        <VerticalResolution>1080</VerticalResolution>
+      </Display>
       <UserAccounts>
         <LocalAccounts>
           <LocalAccount wcm:action="add">
