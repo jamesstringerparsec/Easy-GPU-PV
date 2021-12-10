@@ -61,19 +61,23 @@ If (!($DriveLetter -like "*:*")) {
     }
 
 If ($GPUName -eq "AUTO") {
-    $PartitionableGPUList = Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2" 
+    $PartitionableGPUList = Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2"
     $DevicePathName = $PartitionableGPUList.Name | Select-Object -First 1
-    $GPUName = Get-PnpDevice | Where-Object {$_.DeviceID -like "*$($DevicePathName.Substring(8,16))*"} | Select-Object FriendlyName -ExpandProperty FriendlyName
+    $GPU = Get-PnpDevice | Where-Object {($_.DeviceID -like "*$($DevicePathName.Substring(8,16))*") -and ($_.Status -eq "OK")} | Select-Object -First 1
+    $GPUName = $GPU.Friendlyname
+    $GPUServiceName = $GPU.Service 
     }
-
+Else {
+    $GPU = Get-PnpDevice | Where-Object {($_.Name -eq "$GPUName") -and ($_.Status -eq "OK")} | Select-Object -First 1
+    $GPUServiceName = $GPU.Service
+    }
 # Get Third Party drivers used, that are not provided by Microsoft and presumably included in the OS
-$drivers = Get-WmiObject Win32_PNPSignedDriver | where {$_.DeviceName -eq "$GPUName"}
+$Drivers = Get-WmiObject Win32_PNPSignedDriver | where {$_.DeviceName -eq "$GPUName"}
 
 New-Item -ItemType Directory -Path "$DriveLetter\windows\system32\HostDriverStore" -Force | Out-Null
 
 #copy directory associated with sys file 
-$service = Get-PnpDevice | Where-Object {$_.Name -eq "$GPUName"} | Select-Object Service -ExpandProperty Service
-$servicePath = (Get-WmiObject Win32_SystemDriver | Where-Object {$_.Name -eq "$service"}).Pathname
+$servicePath = (Get-WmiObject Win32_SystemDriver | Where-Object {$_.Name -eq "$GPUServiceName"}).Pathname
                 $ServiceDriverDir = $servicepath.split('\')[0..5] -join('\')
                 $ServicedriverDest = ("$driveletter" + "\" + $($servicepath.split('\')[1..5] -join('\'))).Replace("DriverStore","HostDriverStore")
                 if (!(Test-Path $ServicedriverDest)) {
@@ -4302,7 +4306,7 @@ param(
     New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" -Version $MaxAvailableVersion | Out-Null
     Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
     Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
-    $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | select Manufacturer
+    $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | Foreach-Object Manufacturer
     $BuildVer = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
     if (($BuildVer.CurrentBuild -lt 22000) -and ($CPUManufacturer -eq "AuthenticAMD")) {
         }
