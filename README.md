@@ -13,7 +13,7 @@ Easy-GPU-P does the following...
 WARNING: A work in progress...
 
 ### Prerequisites:
-* Wimndows 10 20H1+ Pro or Enterprise  or Windows 11 Pro or Enterprise
+* Windows 10 20H1+ Pro or Enterprise  or Windows 11 Pro or Enterprise
 * Desktop Computer with dedicated NVIDIA/AMD GPU or Integrated Intel GPU - Laptops with NVIDIA GPUs are not supported at this time, but Intel integrated GPUs work on laptops.  GPU must support hardware video encoding (NVIDIA NVENC, Intel Quicksync or AMD AMF).
 * Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.
 * Latest Windows 10 ISO [downloaded from here](https://www.microsoft.com/en-gb/software-download/windows10ISO) / Windows 11 ISO [downloaded from here](https://www.microsoft.com/en-us/software-download/windows11)
@@ -57,7 +57,10 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
   ```Autologon = "true"```- If you want the VM to automatically login to the Windows Desktop
 
 
-Thanks to [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
+Thanks to:  
+- [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
+- [gawainXX](https://github.com/gawainXX) for help testing and pointing out bugs and feature improvements.  
+
 
 ### Notes:    
 - Windows 10 20H1 is not well tested as I don't have any Win10 20H1 installs, if you have success on Windows 10 20H1 - 21H2 please let me know.
