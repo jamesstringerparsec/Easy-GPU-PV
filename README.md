@@ -57,7 +57,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
   ```Autologon = "true"```- If you want the VM to automatically login to the Windows Desktop
 
 
-Thanks to:  
+### Thanks to:  
 - [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
 - [gawainXX](https://github.com/gawainXX) for help testing and pointing out bugs and feature improvements.  
 
