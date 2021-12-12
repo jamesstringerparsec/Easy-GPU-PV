@@ -32,8 +32,8 @@ if ($params.Username -eq $params.VMName ) {
 if (!($params.Username -match "^[a-zA-Z0-9]+$")) {
     $ExitReason += "Username cannot contain special characters."
     }
-if (!($params.VMName -match "^[a-zA-Z0-9]+$")) {
-    $ExitReason += "VMName cannot contain special characters."
+if (($params.VMName -notmatch "^[a-zA-Z0-9]+$") -or ($params.VMName.Length -gt 15)) {
+    $ExitReason += "VMName cannot contain special characters, or be more than 15 characters long"
     }
 if (([Environment]::OSVersion.Version.Build -lt 22000) -and ($params.GPUName -ne "AUTO")) {
     $ExitReason += "GPUName must be set to AUTO on Windows 10."
