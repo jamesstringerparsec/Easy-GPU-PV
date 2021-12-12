@@ -62,7 +62,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 
 ### Notes:    
 - Windows 10 20H1 is not well tested as I don't have any Win10 20H1 installs, if you have success on Windows 10 20H1 - 21H2 please let me know.
-- A display or HDMI dummy dongle must be plugged into the GPU to allow Parsec to capture the screen.  
+- A powered on display / HDMI dummy dongle must be plugged into the GPU to allow Parsec to capture the screen.  You only only need one of these per host machine regardless of number of VM's.
 - The screen may go black for times up to 10 seconds in sitautions when UAC prompts appear, applications go in and out of fullscreen and when you switch between video codecs in Parsec - not really sure why this happens, it's unique to GPU-P machines and seems to recover faster at 1280x720.
 - Vulkan renderer is unavailable and GL games may or may not work.
 - If you boot your VM up for the first time and you are unable to press Yes to the UAC prompts for Parsec Virtual Display Driver / Virtual Audio cable it means that you used either special characters in the username you set or the username you set is the same as the VM name.  Please recreate the VM making sure not to use the same username as the VM name and be sure not to include special characters.  
