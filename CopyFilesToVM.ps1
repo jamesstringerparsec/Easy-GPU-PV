@@ -19,6 +19,34 @@
 
 Import-Module $PSSCriptRoot\Add-VMGpuPartitionAdapterFiles.psm1
 
+Function Check-Params {
+
+$ExitReason = @()
+
+if (!(test-path $params.SourcePath)) {
+    $ExitReason += "ISO Path Invalid. Please enter a valid ISO Path in the SourcePath section of Params."
+    }
+if ($params.Username -eq $params.VMName ) {
+    $ExitReason += "Username cannot be the same as VMName."
+    }
+if (!($params.Username -match "^[a-zA-Z0-9]+$")) {
+    $ExitReason += "Username cannot contain special characters."
+    }
+if (!($params.VMName -match "^[a-zA-Z0-9]+$")) {
+    $ExitReason += "VMName cannot contain special characters."
+    }
+if (([Environment]::OSVersion.Version.Build -lt 22000) -and ($params.GPUName -ne "AUTO")) {
+    $ExitReason += "GPUName must be set to AUTO on Windows 10."
+    }
+If ($ExitReason.Count -gt 0) {
+    Write-Host "Script failed params check due to the following reasons:" -ForegroundColor DarkYellow
+    ForEach ($IndividualReason in $ExitReason) {
+        Write-Host "ERROR: $IndividualReason" -ForegroundColor RED
+        }
+    Exit
+    }
+}
+
 Function Setup-ParsecInstall {
 param(
 [string]$DriveLetter,
@@ -4243,6 +4271,8 @@ param(
     Add-VMDvdDrive -VMName $VMName -Path $SourcePath
     Assign-VMGPUPartitionAdapter -GPUName $GPUName -VMName $VMName -GPUResourceAllocationPercentage $GPUResourceAllocationPercentage
 }
+
+Check-Params @params
 
 New-GPUEnabledVM @params
 
