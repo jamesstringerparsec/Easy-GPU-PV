@@ -6,12 +6,14 @@ GPU-P allows you to partition your systems dedicated or integrated GPU and assig
 Easy-GPU-P aims to make this easier by automating the steps required to get a GPU-P VM up and running.  
 Easy-GPU-P does the following...  
 1) Creates a VM of your choosing
-2) Automatically Installs Windows 11 to the VM
+2) Automatically Installs specified Windows version to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
 4) Installs [Parsec](https://parsec.app) to the VM, you can use Parsec for free non commercially. To use Parsec commercially, sign up to a [Parsec For Teams](https://parsec.app/teams) account  
 
 ### Prerequisites:
-* Windows 10 20H1+ Pro or Enterprise  or Windows 11 Pro or Enterprise.  
+* Windows 10 20H1+ Pro or Enterprise  or Windows 11 Pro or Enterprise.
+* Hyper-V enabled in "Windows Features" 
+* The VM Windows version must match the host system Windows (A Windows 10 host needs to install a Windows 10 VM)
 * Desktop Computer with dedicated NVIDIA/AMD GPU or Integrated Intel GPU - Laptops with NVIDIA GPUs are not supported at this time, but Intel integrated GPUs work on laptops.  GPU must support hardware video encoding (NVIDIA NVENC, Intel Quicksync or AMD AMF).  
 * Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.  
 * Latest Windows 10 ISO [downloaded from here](https://www.microsoft.com/en-gb/software-download/windows10ISO) / Windows 11 ISO [downloaded from here.](https://www.microsoft.com/en-us/software-download/windows11) - Do not use Media Creation Tool, if no direct ISO link is available, follow [this guide.](https://www.nextofwindows.com/downloading-windows-10-iso-images-using-rufus)
