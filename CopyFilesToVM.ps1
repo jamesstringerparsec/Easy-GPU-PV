@@ -4252,24 +4252,38 @@ param(
 [string]$password,
 [string]$autologon
 )
+    
+    if (test-path $vhdPath) {
+        Write-Host "Virtual Machine Disk already exists at $vhdPath, please delete existing VHDX or change VMName"
+        Exit
+        }
     Modify-AutoUnattend -username "$username" -password "$password" -autologon $autologon -hostname $VMName -UnattendPath $UnattendPath
     $MaxAvailableVersion = (Get-VMHostSupportedVersion).Version | Where-Object {$_.Major -lt 254}| Select-Object -Last 1 
     Convert-WindowsImage -SourcePath $SourcePath -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes| Out-Null
-    New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" -Version $MaxAvailableVersion | Out-Null
-    Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
-    Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
-    $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | Foreach-Object Manufacturer
-    $BuildVer = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
-    if (($BuildVer.CurrentBuild -lt 22000) -and ($CPUManufacturer -eq "AuthenticAMD")) {
+    if (Test-Path $vhdPath) {
+        New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" -Version $MaxAvailableVersion | Out-Null
+        Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
+        Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
+        $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | Foreach-Object Manufacturer
+        $BuildVer = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+        if (($BuildVer.CurrentBuild -lt 22000) -and ($CPUManufacturer -eq "AuthenticAMD")) {
+            }
+        Else {
+            Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
+            }
+        Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
+        Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
+        Enable-VMTPM -VMName $VMName 
+        Add-VMDvdDrive -VMName $VMName -Path $SourcePath
+        Assign-VMGPUPartitionAdapter -GPUName $GPUName -VMName $VMName -GPUResourceAllocationPercentage $GPUResourceAllocationPercentage
+        Write-Host "INFO   : Starting and connecting to VM"
+        vmconnect localhost $VMName
         }
-    Else {
-        Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
-        }
-    Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
-    Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
-    Enable-VMTPM -VMName $VMName 
-    Add-VMDvdDrive -VMName $VMName -Path $SourcePath
-    Assign-VMGPUPartitionAdapter -GPUName $GPUName -VMName $VMName -GPUResourceAllocationPercentage $GPUResourceAllocationPercentage
+    else {
+    Write-Host "Failed to create VHDX, stopping script"
+    Exit
+    }
+
 }
 
 Check-Params @params
@@ -4279,5 +4293,5 @@ New-GPUEnabledVM @params
 Start-VM -Name $params.VMName
 
 Read-Host -Prompt "If all went well the Virtual Machine will have started - 
-you need to approve a certificate install inside the VM 
-via the Hyper-V viewer before connecting via Parsec"
+you need to accept two certificate install dialogs inside the VM to install a 
+virtual display and virtual audio cable via the Hyper-V viewer then sign into Parsec and connect via Parsec"
