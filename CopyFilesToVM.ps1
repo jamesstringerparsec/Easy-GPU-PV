@@ -4253,7 +4253,11 @@ param(
 [string]$autologon
 )
     
-    if (test-path $vhdPath) {
+    if ($(Get-VM -Name $VMName -ErrorAction SilentlyContinue) -ne $NULL) {
+        "Virtual Machine already exists with name $VMName, please delete existing VM or change VMName"
+        Exit
+        }
+    if (Test-Path $vhdPath) {
         Write-Host "Virtual Machine Disk already exists at $vhdPath, please delete existing VHDX or change VMName"
         Exit
         }
@@ -4283,7 +4287,6 @@ param(
     Write-Host "Failed to create VHDX, stopping script"
     Exit
     }
-
 }
 
 Check-Params @params
