@@ -19,10 +19,41 @@
 
 Import-Module $PSSCriptRoot\Add-VMGpuPartitionAdapterFiles.psm1
 
+function Is-Administrator  
+{  
+    $CurrentUser = [Security.Principal.WindowsIdentity]::GetCurrent();
+    (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
+}
+
+Function SmartExit {
+param (
+[switch]$NoHalt,
+[string]$ExitReason
+)
+if (($host.name -eq 'Windows PowerShell ISE Host') -or ($host.Name -eq 'Visual Studio Code Host')) {
+    Write-Host $ExitReason
+    Exit
+    }
+else{
+    if ($NoHalt) {
+        Write-Host $ExitReason
+        Exit
+        }
+    else {
+        Write-Host $ExitReason
+        Read-host -Prompt "Press any key to Exit..."
+        Exit
+        }
+    }
+}
+
 Function Check-Params {
 
 $ExitReason = @()
 
+if ((Is-Administrator) -eq $false) {
+    $ExitReason += "Script not running as Administrator, please run script as Administrator."
+    }
 if (!(test-path $params.SourcePath)) {
     $ExitReason += "ISO Path Invalid. Please enter a valid ISO Path in the SourcePath section of Params."
     }
@@ -43,7 +74,7 @@ If ($ExitReason.Count -gt 0) {
     ForEach ($IndividualReason in $ExitReason) {
         Write-Host "ERROR: $IndividualReason" -ForegroundColor RED
         }
-    Exit
+    SmartExit
     }
 }
 
@@ -4254,12 +4285,10 @@ param(
 )
     
     if ($(Get-VM -Name $VMName -ErrorAction SilentlyContinue) -ne $NULL) {
-        "Virtual Machine already exists with name $VMName, please delete existing VM or change VMName"
-        Exit
+        SmartExit -ExitReason "Virtual Machine already exists with name $VMName, please delete existing VM or change VMName"
         }
     if (Test-Path $vhdPath) {
-        Write-Host "Virtual Machine Disk already exists at $vhdPath, please delete existing VHDX or change VMName"
-        Exit
+        SmartExit -ExitReason "Virtual Machine Disk already exists at $vhdPath, please delete existing VHDX or change VMName"
         }
     Modify-AutoUnattend -username "$username" -password "$password" -autologon $autologon -hostname $VMName -UnattendPath $UnattendPath
     $MaxAvailableVersion = (Get-VMHostSupportedVersion).Version | Where-Object {$_.Major -lt 254}| Select-Object -Last 1 
@@ -4284,8 +4313,8 @@ param(
         vmconnect localhost $VMName
         }
     else {
-    Write-Host "Failed to create VHDX, stopping script"
-    Exit
+    SmartExit -ExitReason "Failed to create VHDX, stopping script"
+
     }
 }
 
@@ -4295,6 +4324,6 @@ New-GPUEnabledVM @params
 
 Start-VM -Name $params.VMName
 
-Read-Host -Prompt "If all went well the Virtual Machine will have started - 
+SmartExit -ExitReason "If all went well the Virtual Machine will have started - 
 you need to accept two certificate install dialogs inside the VM to install a 
 virtual display and virtual audio cable via the Hyper-V viewer then sign into Parsec and connect via Parsec"
