@@ -21,24 +21,7 @@ if (Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninst
     $configfile += "host_privacy_mode = 1"
     $configfile | Out-File C:\ProgramData\Parsec\config.txt -Encoding ascii
     }
-
-<#
-    if (!((Get-ChildItem -Path Cert:\CurrentUser\TrustedPublisher).DnsNameList.Unicode -like "Parsec Cloud, Inc.")) {
-    cmd /c C:\ProgramFiles\Easy-GPU-P\cert.bat
-    }
-
-    Invoke-Item Cert:\CurrentUser\TrustedPublisher
-    start-sleep -s 30
-
-
-if (!((Get-ChildItem -Path Cert:\CurrentUser\TrustedPublisher).DnsNameList.Unicode -like "Parsec Cloud, Inc.")) {
-    Import-Certificate -CertStoreLocation Cert:\CurrentUser\TrustedPublisher -FilePath C:\ProgramData\Easy-GPU-P\parsecpublic.cer
-if (!(Test-Path C:\ProgramData\Easy-GPU-P\second.txt)) {
-    New-Item -ItemType File -Path C:\ProgramData\Easy-GPU-P\second.txt
-    Restart-Computer
-    }
-}
-#>
+    
 if (!(Get-WmiObject Win32_VideoController | Where-Object name -like "VB-Audio Virtual Cable")) {
     New-Item -Path "C:\Users\$env:Username\Downloads\VBCable" -ItemType Directory| Out-Null
     Expand-Archive -Path "C:\Users\$env:USERNAME\Downloads\VBCable.zip" -DestinationPath "C:\Users\$env:USERNAME\Downloads\VBCable"
@@ -54,15 +37,8 @@ if (!(Get-WmiObject Win32_VideoController | Where-Object name -like "VB-Audio Vi
     Start-Process -FilePath "C:\Users\$env:Username\Downloads\VBCable\VBCABLE_Setup_x64.exe" -ArgumentList '-i','-h'
     }
   
-#if(((Get-ChildItem -Path Cert:\CurrentUser\TrustedPublisher).DnsNameList.Unicode -like "Parsec Cloud, Inc.")) {
-    if (!(Get-WmiObject Win32_VideoController | Where-Object name -like "Parsec Virtual Display Adapter")) {
-    #cmd /c C:\ProgramFiles\Easy-GPU-P\cert.bat
-    Get-PnpDevice | Where-Object {$_.friendlyname -like "Microsoft Hyper-V Video" -and $_.status -eq "OK"} | Disable-PnpDevice -confirm:$false
-    Start-Process "C:\Users\$env:USERNAME\Downloads\parsec-vdd.exe" -ArgumentList "/s"
-    }
 
-<#}
-Else {
-Restart-Computer
+if (!(Get-WmiObject Win32_VideoController | Where-Object name -like "Parsec Virtual Display Adapter")) {
+Get-PnpDevice | Where-Object {$_.friendlyname -like "Microsoft Hyper-V Video" -and $_.status -eq "OK"} | Disable-PnpDevice -confirm:$false
+Start-Process "C:\Users\$env:USERNAME\Downloads\parsec-vdd.exe" -ArgumentList "/s"
 }
-#>
