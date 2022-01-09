@@ -13,13 +13,12 @@ if (Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninst
     {}
     else {
     (New-Object System.Net.WebClient).DownloadFile("https://builds.parsecgaming.com/package/parsec-windows.exe", "C:\Users\$env:USERNAME\Downloads\parsec-windows.exe")
-    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-    $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) | Out-File C:\ProgramData\Easy-GPU-P\admim.txt
     Start-Process "C:\Users\$env:USERNAME\Downloads\parsec-windows.exe" -ArgumentList "/silent", "/shared","/team_id=$team_id","/team_computer_key=$key" -wait
     $configfile = Get-Content C:\ProgramData\Parsec\config.txt
     $configfile += "host_virtual_monitors = 1"
     $configfile += "host_privacy_mode = 1"
     $configfile | Out-File C:\ProgramData\Parsec\config.txt -Encoding ascii
+    Copy-Item C:\ProgramData\Parsec\Easy-GPU-P\Parsec.lnk -Destination C:\Users\Public\Desktop
     }
 
 Function ParsecVDDMonitorSetupScheduledTask {
