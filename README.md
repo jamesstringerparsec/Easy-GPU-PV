@@ -26,9 +26,8 @@ Easy-GPU-P does the following...
 5. Open and Run PreChecks.ps1 in Powershell ISE using the green play button and copy the GPU Listed (or the warnings that you need to fix).
 6. Open CopyFilesToVM.ps1 Powershell ISE and edit the params section at the top of the file, you need to be careful about how much ram, storage and hard drive you give it as you system needs to have that available.  On Windows 10 the GPUName must be left as "AUTO", In Windows 11 it can be either "AUTO" or the specific name of the GPU you want to partition exactly how it appears in PreChecks.ps1.  Additionally, you need to provide the path to the Windows 10/11 ISO file you downloaded.
 7. Run CopyFilesToVM.ps1 with your changes to the params section - this may take 5-10 minutes.
-8. View the VM in Hyper-V, once it gets to the Windows Desktop you will need to approve the certificate install request for Parsec and Virtual Audio Cable.
-9. Sign into Parsec on the VM.
-10. You should be good to go!
+8. Open and sign into Parsec on the VM.
+9. You should be good to go!
 
 ### Upgrading GPU Drivers when you update the host GPU Drivers
 It's important to update the VM GPU Drivers after you have updated the Host GPUs drivers. You can do this by...  
@@ -65,4 +64,4 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 - A powered on display / HDMI dummy dongle must be plugged into the GPU to allow Parsec to capture the screen.  You only only need one of these per host machine regardless of number of VM's.
 - The screen may go black for times up to 10 seconds in sitautions when UAC prompts appear, applications go in and out of fullscreen and when you switch between video codecs in Parsec - not really sure why this happens, it's unique to GPU-P machines and seems to recover faster at 1280x720.
 - Vulkan renderer is unavailable and GL games may or may not work.  [This](https://www.microsoft.com/en-us/p/opencl-and-opengl-compatibility-pack/9nqpsl29bfff?SilentAuth=1&wa=wsignin1.0#activetab=pivot:overviewtab) may help with some OpenGL apps.  
-- If you boot your VM up for the first time and you are unable to press Yes to the UAC prompts for Parsec Virtual Display Driver / Virtual Audio cable it means that you used either special characters in the username you set or the username you set is the same as the VM name.  Please recreate the VM making sure not to use the same username as the VM name and be sure not to include special characters.  
+- If you do not have administrator permissions on the machine it means you set the username and vmname to the same thing, these needs to be different.  
