@@ -66,3 +66,4 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 - The screen may go black for times up to 10 seconds in sitautions when UAC prompts appear, applications go in and out of fullscreen and when you switch between video codecs in Parsec - not really sure why this happens, it's unique to GPU-P machines and seems to recover faster at 1280x720.
 - Vulkan renderer is unavailable and GL games may or may not work.  [This](https://www.microsoft.com/en-us/p/opencl-and-opengl-compatibility-pack/9nqpsl29bfff?SilentAuth=1&wa=wsignin1.0#activetab=pivot:overviewtab) may help with some OpenGL apps.  
 - If you do not have administrator permissions on the machine it means you set the username and vmname to the same thing, these needs to be different.  
+- AMD Polaris GPUS like the RX 580 do not support hardware video encoding via GPU Paravirtualization at this time.
