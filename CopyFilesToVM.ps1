@@ -4332,6 +4332,6 @@ New-GPUEnabledVM @params
 
 Start-VM -Name $params.VMName
 
-SmartExit -ExitReason "If all went well the Virtual Machine will have started - 
-you need to accept two certificate install dialogs inside the VM to install a 
-virtual display and virtual audio cable via the Hyper-V viewer then sign into Parsec and connect via Parsec"
+SmartExit -ExitReason "If all went well the Virtual Machine will have started, 
+In a few minutes it will load the Windows desktop, 
+when it does sign into Parsec and start installing your games.  Have fun!"
