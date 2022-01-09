@@ -7,6 +7,8 @@ while(!(Test-NetConnection Google.com).PingSucceeded){
     Start-Sleep -Seconds 1
     }
 
+Get-ChildItem -Path C:\ProgramData\Easy-GPU-P -Recurse | Unblock-File
+
 if (Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Parsec) 
     {}
     else {

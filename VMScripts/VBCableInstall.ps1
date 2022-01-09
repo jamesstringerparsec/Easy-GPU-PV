@@ -10,10 +10,10 @@
     $VB.ExportType = [System.Security.Cryptography.X509Certificates.X509ContentType]::Cert;
     $VB.Cert = (Get-AuthenticodeSignature -filepath $VB.DriverFile).SignerCertificate;
     [System.IO.File]::WriteAllBytes($VB.CertName, $VB.Cert.Export($VB.ExportType))
-    #while (((Get-ChildItem Cert:\LocalMachine\TrustedPublisher) | Where-Object {$_.Subject -like '*Vincent Burel*'}) -eq $NULL) {
+    while (((Get-ChildItem Cert:\LocalMachine\TrustedPublisher) | Where-Object {$_.Subject -like '*Vincent Burel*'}) -eq $NULL) {
         certutil -Enterprise -Addstore "TrustedPublisher" $VB.CertName
         Start-Sleep -s 5
-    #    }
+        }
     Start-Process -FilePath "C:\Users\$env:Username\Downloads\VBCable\VBCABLE_Setup_x64.exe" -ArgumentList '-i','-h'
     }
   
