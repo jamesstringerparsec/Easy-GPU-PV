@@ -51,7 +51,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
   ```Team_ID = ""``` - The Parsec for Teams ID if you are a Parsec for Teams Subscriber  
   ```Key = ""``` - The Parsec for Teams Secret Key if you are a Parsec for Teams Subscriber  
   ```Username = "GPUVM"``` - The VM Windows Username, do not include special characters, and must be different from the "VMName" value you set  
-  ```Password = "CoolestPassword!"``` - The VM Windows Password  
+  ```Password = "CoolestPassword!"``` - The VM Windows Password, cannot be blank.
   ```Autologon = "true"```- If you want the VM to automatically login to the Windows Desktop
 
 
