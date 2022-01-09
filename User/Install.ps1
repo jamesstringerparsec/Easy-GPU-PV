@@ -11,8 +11,6 @@ if (Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninst
     {}
     else {
     (New-Object System.Net.WebClient).DownloadFile("https://builds.parsecgaming.com/package/parsec-windows.exe", "C:\Users\$env:USERNAME\Downloads\parsec-windows.exe")
-    (New-Object System.Net.WebClient).DownloadFile("https://builds.parsec.app/vdd/parsec-vdd-0.37.0.0.exe", "C:\Users\$env:USERNAME\Downloads\parsec-vdd.exe")
-    (New-Object System.Net.WebClient).DownloadFile("https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "C:\Users\$env:USERNAME\Downloads\VBCable.zip")
     $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
     $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) | Out-File C:\ProgramData\Easy-GPU-P\admim.txt
     Start-Process "C:\Users\$env:USERNAME\Downloads\parsec-windows.exe" -ArgumentList "/silent", "/shared","/team_id=$team_id","/team_computer_key=$key" -wait
@@ -21,24 +19,189 @@ if (Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninst
     $configfile += "host_privacy_mode = 1"
     $configfile | Out-File C:\ProgramData\Parsec\config.txt -Encoding ascii
     }
-    
-if (!(Get-WmiObject Win32_VideoController | Where-Object name -like "VB-Audio Virtual Cable")) {
-    New-Item -Path "C:\Users\$env:Username\Downloads\VBCable" -ItemType Directory| Out-Null
-    Expand-Archive -Path "C:\Users\$env:USERNAME\Downloads\VBCable.zip" -DestinationPath "C:\Users\$env:USERNAME\Downloads\VBCable"
-    $pathToCatFile = "C:\Users\$env:USERNAME\Downloads\VBCable\vbaudio_cable64_win7.cat"
-    $FullCertificateExportPath = "C:\Users\$env:USERNAME\Downloads\VBCable\VBCert.cer"
-    $VB = @{}
-    $VB.DriverFile = $pathToCatFile;
-    $VB.CertName = $FullCertificateExportPath;
-    $VB.ExportType = [System.Security.Cryptography.X509Certificates.X509ContentType]::Cert;
-    $VB.Cert = (Get-AuthenticodeSignature -filepath $VB.DriverFile).SignerCertificate;
-    [System.IO.File]::WriteAllBytes($VB.CertName, $VB.Cert.Export($VB.ExportType))
-    Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPublisher -FilePath $VB.CertName | Out-Null
-    Start-Process -FilePath "C:\Users\$env:Username\Downloads\VBCable\VBCABLE_Setup_x64.exe" -ArgumentList '-i','-h'
-    }
-  
 
-if (!(Get-WmiObject Win32_VideoController | Where-Object name -like "Parsec Virtual Display Adapter")) {
-Get-PnpDevice | Where-Object {$_.friendlyname -like "Microsoft Hyper-V Video" -and $_.status -eq "OK"} | Disable-PnpDevice -confirm:$false
-Start-Process "C:\Users\$env:USERNAME\Downloads\parsec-vdd.exe" -ArgumentList "/s"
-}
+Function ParsecVDDMonitorSetupScheduledTask {
+$XML = @"
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Description>Monitors the state of Parsec Virtual Display and repairs if broken</Description>
+    <URI>\Monitor Parsec VDD State</URI>
+  </RegistrationInfo>
+  <Triggers>
+    <LogonTrigger>
+      <Enabled>true</Enabled>
+      <UserId>$(([System.Security.Principal.WindowsIdentity]::GetCurrent()).Name)</UserId>
+      <Delay>PT2M</Delay>
+    </LogonTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <UserId>$(([System.Security.Principal.WindowsIdentity]::GetCurrent()).User.Value)</UserId>
+      <LogonType>S4U</LogonType>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>true</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>true</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>false</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>true</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT72H</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe</Command>
+      <Arguments>-file %programdata%\Easy-GPU-P\VDDMonitor.ps1</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+"@
+
+    try {
+        Get-ScheduledTask -TaskName "Monitor Parsec VDD State" -ErrorAction Stop | Out-Null
+        Unregister-ScheduledTask -TaskName "Monitor Parsec VDD State" -Confirm:$false
+        }
+    catch {}
+    $action = New-ScheduledTaskAction -Execute 'C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe' -Argument '-file %programdata%\Easy-GPU-P\VDDMonitor.ps1'
+    $trigger =  New-ScheduledTaskTrigger -AtStartup
+    Register-ScheduledTask -XML $XML -TaskName "Monitor Parsec VDD State" | Out-Null
+    }
+Function VBCableInstallSetupScheduledTask {
+$XML = @"
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Description>Install VB Cable</Description>
+    <URI>\Install VB Cable</URI>
+  </RegistrationInfo>
+  <Triggers>
+    <LogonTrigger>
+      <Enabled>true</Enabled>
+      <UserId>$(([System.Security.Principal.WindowsIdentity]::GetCurrent()).Name)</UserId>
+      <Delay>PT2M</Delay>
+    </LogonTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <UserId>$(([System.Security.Principal.WindowsIdentity]::GetCurrent()).User.Value)</UserId>
+      <LogonType>S4U</LogonType>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>true</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>true</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>false</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>true</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT72H</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe</Command>
+      <Arguments>-file %programdata%\Easy-GPU-P\VBCableInstall.ps1</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+"@
+
+    try {
+        Get-ScheduledTask -TaskName "Install VB Cable" -ErrorAction Stop | Out-Null
+        Unregister-ScheduledTask -TaskName "Install VB Cable" -Confirm:$false
+        }
+    catch {}
+    $action = New-ScheduledTaskAction -Execute 'C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe' -Argument '-file %programdata%\Easy-GPU-P\VBCableInstall.ps1'
+    $trigger =  New-ScheduledTaskTrigger -AtStartup
+    Register-ScheduledTask -XML $XML -TaskName "Install VB Cable" | Out-Null
+    }
+Function ParsecVDDInstallSetupScheduledTask {
+$XML = @"
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Description>Install Parsec Virtual Display Driver</Description>
+    <URI>\Install Parsec Virtual Display Driver</URI>
+  </RegistrationInfo>
+  <Triggers>
+    <LogonTrigger>
+      <Enabled>true</Enabled>
+      <UserId>$(([System.Security.Principal.WindowsIdentity]::GetCurrent()).Name)</UserId>
+      <Delay>PT2M</Delay>
+    </LogonTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <UserId>$(([System.Security.Principal.WindowsIdentity]::GetCurrent()).User.Value)</UserId>
+      <LogonType>S4U</LogonType>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>true</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>true</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>false</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>true</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT72H</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe</Command>
+      <Arguments>-file %programdata%\Easy-GPU-P\ParsecVDDInstall.ps1</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+"@
+
+    try {
+        Get-ScheduledTask -TaskName "Install Parsec Virtual Display Driver" -ErrorAction Stop | Out-Null
+        Unregister-ScheduledTask -TaskName "Install Parsec Virtual Display Driver" -Confirm:$false
+        }
+    catch {}
+    $action = New-ScheduledTaskAction -Execute 'C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe' -Argument '-file %programdata%\Easy-GPU-P\ParsecVDDInstall.ps1'
+    $trigger =  New-ScheduledTaskTrigger -AtStartup
+    Register-ScheduledTask -XML $XML -TaskName "Install Parsec Virtual Display Driver" | Out-Null
+    }
+
+ParsecVDDMonitorSetupScheduledTask
+VBCableInstallSetupScheduledTask
+ParsecVDDInstallSetupScheduledTask
+
+Start-ScheduledTask -TaskName "Install VB Cable"
+Start-ScheduledTask -TaskName "Install Parsec Virtual Display Driver"
+Start-ScheduledTask -TaskName "Monitor Parsec VDD State"

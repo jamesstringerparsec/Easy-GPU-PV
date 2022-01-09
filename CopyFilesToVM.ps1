@@ -7,6 +7,7 @@
     SizeBytes  = 40GB
     MemoryAmount = 8GB
     CPUCores = 4
+    NetworkSwitch = "Default Switch"
     UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
     GPUName = "AUTO"
     GPUResourceAllocationPercentage = 50
@@ -103,6 +104,10 @@ param(
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\ProgramData\Easy-GPU-P) -eq $true) {} Else {New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory | Out-Null}
+    Copy-Item -Path $psscriptroot\VMScripts\VDDMonitor.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
+    Copy-Item -Path $psscriptroot\VMScripts\VBCableInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
+    Copy-Item -Path $psscriptroot\VMScripts\ParsecVDDInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
+    Copy-Item -Path $psscriptroot\VMScripts\ParsecPublic.cer -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\gpt.ini -Destination $DriveLetter\Windows\system32\GroupPolicy
     Copy-Item -Path $psscriptroot\User\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
     Copy-Item -Path $psscriptroot\User\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
@@ -4274,6 +4279,7 @@ param(
 [string]$UnattendPath,
 [int64]$MemoryAmount,
 [int]$CPUCores,
+[string]$NetworkSwitch,
 [string]$GPUName,
 [float]$GPUResourceAllocationPercentage,
 [string]$SourcePath,
@@ -4294,7 +4300,7 @@ param(
     $MaxAvailableVersion = (Get-VMHostSupportedVersion).Version | Where-Object {$_.Major -lt 254}| Select-Object -Last 1 
     Convert-WindowsImage -SourcePath $SourcePath -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes| Out-Null
     if (Test-Path $vhdPath) {
-        New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName "Default Switch" -Version $MaxAvailableVersion | Out-Null
+        New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -VHDPath $VhdPath -Generation 2 -SwitchName $NetworkSwitch -Version $MaxAvailableVersion | Out-Null
         Set-VM -Name $VMName -ProcessorCount $CPUCores -CheckpointType Disabled -LowMemoryMappedIoSpace 3GB -HighMemoryMappedIoSpace 32GB -GuestControlledCacheTypes $true -AutomaticStopAction ShutDown
         Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
         $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | Foreach-Object Manufacturer
@@ -4305,6 +4311,7 @@ param(
             Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
             }
         Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
+        Set-VMVideo -VMName $VMName -HorizontalResolution 1920 -VerticalResolution 1080
         Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
         Enable-VMTPM -VMName $VMName 
         Add-VMDvdDrive -VMName $VMName -Path $SourcePath
