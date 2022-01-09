@@ -18,7 +18,7 @@ if (Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninst
     $configfile += "host_virtual_monitors = 1"
     $configfile += "host_privacy_mode = 1"
     $configfile | Out-File C:\ProgramData\Parsec\config.txt -Encoding ascii
-    Copy-Item C:\ProgramData\Parsec\Easy-GPU-P\Parsec.lnk -Destination C:\Users\Public\Desktop
+    Copy-Item -Path "C:\ProgramData\Easy-GPU-P\Parsec.lnk" -Destination "C:\Users\Public\Desktop"
     }
 
 Function ParsecVDDMonitorSetupScheduledTask {
