@@ -26,7 +26,7 @@ Easy-GPU-P does the following...
 5. Open and Run PreChecks.ps1 in Powershell ISE using the green play button and copy the GPU Listed (or the warnings that you need to fix).
 6. Open CopyFilesToVM.ps1 Powershell ISE and edit the params section at the top of the file, you need to be careful about how much ram, storage and hard drive you give it as you system needs to have that available.  On Windows 10 the GPUName must be left as "AUTO", In Windows 11 it can be either "AUTO" or the specific name of the GPU you want to partition exactly how it appears in PreChecks.ps1.  Additionally, you need to provide the path to the Windows 10/11 ISO file you downloaded.
 7. Run CopyFilesToVM.ps1 with your changes to the params section - this may take 5-10 minutes.
-8. Open and sign into Parsec on the VM.
+8. Open and sign into Parsec on the VM.  You can use Parsec to connect to the VM up to 4K60FPS.
 9. You should be good to go!
 
 ### Upgrading GPU Drivers when you update the host GPU Drivers
