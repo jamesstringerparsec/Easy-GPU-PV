@@ -45,6 +45,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
   ```MemoryAmount = 8GB``` - Memory size, in this case 8GB  
   ```CPUCores = 4``` - CPU Cores you want to give VM, in this case 4   
   ```NetworkSwitch = "Default Switch"``` - Leave this alone unless you're not using the default Hyper-V Switch  
+  ```VHDPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\"``` - Path to the folder you want the VM Disk to be stored in, it must already exist  
   ```UnattendPath = "$PSScriptRoot"+"\autounattend.xml"``` -Leave this value alone  
   ```GPUName = "AUTO"``` - AUTO selects the first available GPU. On Windows 11 you may also use the exact name of the GPU you want to share with the VM in multi GPU situations (GPU selection is not available in Windows 10 and must be set to AUTO)    
   ```GPUResourceAllocationPercentage = 50``` - Percentage of the GPU you want to share with the VM   
