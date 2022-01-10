@@ -8,6 +8,7 @@
     MemoryAmount = 8GB
     CPUCores = 4
     NetworkSwitch = "Default Switch"
+    VHDPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\"
     UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
     GPUName = "AUTO"
     GPUResourceAllocationPercentage = 50
@@ -36,6 +37,19 @@ param(
     Dismount-DiskImage -DevicePath $mountResult.DevicePath | Out-Null
     }
 
+Function ConcatenateVHDPath {
+param(
+[string]$VHDPath,
+[string]$VMName
+)
+if ($VHDPath[-1] -eq '\') {
+    $VHDPath + $VMName + ".vhdx"
+    }
+Else {
+    $VHDPath + "\" +  $VMName + ".vhdx"
+    }
+}
+
 Function SmartExit {
 param (
 [switch]$NoHalt,
@@ -62,8 +76,12 @@ Function Check-Params {
 
 $ExitReason = @()
 
+
 if ((Is-Administrator) -eq $false) {
     $ExitReason += "Script not running as Administrator, please run script as Administrator."
+    }
+if (!(Test-Path $params.VHDPath)) {
+    $ExitReason += "VHDPath Directory doesn't exist, please create it before running this script."
     }
 if (!(test-path $params.SourcePath)) {
     $ExitReason += "ISO Path Invalid. Please enter a valid ISO Path in the SourcePath section of Params."
@@ -4287,7 +4305,7 @@ param(
 [int64]$SizeBytes,
 [int]$Edition,
 [string]$VhdFormat,
-[string]$VhdPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\$($VMName).vhdx",
+[string]$VhdPath,
 [string]$VMName,
 [string]$DiskLayout,
 [string]$UnattendPath,
@@ -4303,7 +4321,8 @@ param(
 [string]$password,
 [string]$autologon
 )
-    
+    $VHDPath = ConcatenateVHDPath -VHDPath $VHDPath -VMName $VMName
+
     if ($(Get-VM -Name $VMName -ErrorAction SilentlyContinue) -ne $NULL) {
         SmartExit -ExitReason "Virtual Machine already exists with name $VMName, please delete existing VM or change VMName"
         }
