@@ -4366,6 +4366,7 @@ Start-VM -Name $params.VMName
 
 SmartExit -ExitReason "If all went well the Virtual Machine will have started, 
 In a few minutes it will load the Windows desktop, 
-when it does, sign into Parsec and start installing your games.  
+when it does, sign into Parsec (a fast remote desktop app)
+and connect to the machine using Parsec from another computer. 
 Have fun!
 Sign up to Parsec at https://parsec.app"
