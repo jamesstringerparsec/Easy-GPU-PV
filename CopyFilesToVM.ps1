@@ -26,6 +26,16 @@ function Is-Administrator
     (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
 }
 
+Function Test-ISOType {
+param(
+[string]$SourcePath
+)
+    $mountResult = Mount-DiskImage $SourcePath -PassThru 
+    $Driveletter = ($mountResult | Get-Volume).DriveLetter
+    Test-Path $($Driveletter + ":\sources\Install.wim")
+    Dismount-DiskImage -DevicePath $mountResult.DevicePath | Out-Null
+    }
+
 Function SmartExit {
 param (
 [switch]$NoHalt,
@@ -57,6 +67,9 @@ if ((Is-Administrator) -eq $false) {
     }
 if (!(test-path $params.SourcePath)) {
     $ExitReason += "ISO Path Invalid. Please enter a valid ISO Path in the SourcePath section of Params."
+    }
+if (!(Test-ISOType -SourcePath $params.SourcePath)) {
+    $ExitReason += "This ISO is invalid, please check readme for ISO downloading instructions."
     }
 if ($params.Username -eq $params.VMName ) {
     $ExitReason += "Username cannot be the same as VMName."
