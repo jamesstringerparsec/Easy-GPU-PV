@@ -41,7 +41,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
   ```Edition    = 6``` - Leave as 6, this means Windows 10/11 Pro  
   ```VhdFormat  = "VHDX"``` - Leave this value alone  
   ```DiskLayout = "UEFI"``` - Leave this value alone  
-  ```SizeBytes  = 40gb``` - Disk size, in this case 40GB  
+  ```SizeBytes  = 40gb``` - Disk size, in this case 40GB, the minimum is 20GB  
   ```MemoryAmount = 8GB``` - Memory size, in this case 8GB  
   ```CPUCores = 4``` - CPU Cores you want to give VM, in this case 4   
   ```NetworkSwitch = "Default Switch"``` - Leave this alone unless you're not using the default Hyper-V Switch  
