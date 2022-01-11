@@ -1,10 +1,10 @@
-# Easy-GPU-P
-A work-in-progress project dedicated to making GPU Partitioning on Windows Hyper-V easier! Also known as GPU Paravirtualization (GPU-PV).  
+# Easy-GPU-PV
+A work-in-progress project dedicated to making GPU Paravirtualization on Windows Hyper-V easier!  
 
 GPU-P allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  It's the same technology that is used in WSL2, and Windows Sandbox.  
 
-Easy-GPU-P aims to make this easier by automating the steps required to get a GPU-P VM up and running.  
-Easy-GPU-P does the following...  
+Easy-GPU-PV aims to make this easier by automating the steps required to get a GPU-P VM up and running.  
+Easy-GPU-PV does the following...  
 1) Creates a VM of your choosing
 2) Automatically Installs Windows 11 to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
@@ -20,7 +20,7 @@ Easy-GPU-P does the following...
 
 ### Instructions
 1. Make sure your system meets the prerequisits.
-2. [Download the Repo and extract.](https://github.com/jamesstringerparsec/Easy-GPU-P/archive/refs/heads/main.zip)
+2. [Download the Repo and extract.](https://github.com/jamesstringerparsec/Easy-GPU-PV/archive/refs/heads/main.zip)
 3. Search your system for Powershell ISE and run as Administrator.
 4. In the extracted folder you downloaded, open PreChecks.ps1 in Powershell ISE.
 5. Open and Run PreChecks.ps1 in Powershell ISE using the green play button and copy the GPU Listed (or the warnings that you need to fix).
