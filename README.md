@@ -8,7 +8,7 @@ Easy-GPU-PV does the following...
 1) Creates a VM of your choosing
 2) Automatically Installs Windows 11 to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
-4) Installs [Parsec](https://parsec.app) to the VM, Parsec is an ultra low latency remote desktop app.  You can use Parsec for free non commercially. To use Parsec commercially, sign up to a [Parsec For Teams](https://parsec.app/teams) account  
+4) Installs [Parsec](https://parsec.app) to the VM, Parsec is an ultra low latency remote desktop app, use this to connect to the VM.  You can use Parsec for free non commercially. To use Parsec commercially, sign up to a [Parsec For Teams](https://parsec.app/teams) account  
 
 ### Prerequisites:
 * Windows 10 20H1+ Pro or Enterprise  or Windows 11 Pro or Enterprise.  
@@ -62,6 +62,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 
 
 ### Notes:    
+- After you have signed into Parsec on the VM, always use Parsec to connect to the VM.  Keep the Microsft Hyper-V Video adapter disabled. Using RDP and Hyper-V Enhanced Session mode will result in broken behaviour and black screens in Parsec.  RDP and the Hyper-V video adapter only offer a maximum of 30FPS. Using Parsec will allow you to use up to 4k60 FPS.
 - If you get "ERROR  : Cannot bind argument to parameter 'Path' because it is null." this probably means you used Media Creation Tool to download the ISO.  You unfortunately cannot use that, if you don't see a direct ISO download link at the Microsoft page, follow [this guide.](https://www.nextofwindows.com/downloading-windows-10-iso-images-using-rufus)  
 - Windows 10 20H1 is not well tested as I don't have any Win10 20H1 installs, if you have success on Windows 10 20H1 - 21H2 please let me know.
 - A powered on display / HDMI dummy dongle must be plugged into the GPU to allow Parsec to capture the screen.  You only only need one of these per host machine regardless of number of VM's.
