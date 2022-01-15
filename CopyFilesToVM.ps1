@@ -1987,7 +1987,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             ####################################################################################################
 
             Write-W2VInfo "Looking for the requested Windows image in the WIM file"
-            $WindowsImage = Get-WindowsImage -ImagePath $SourcePath
+            $WindowsImage = Get-WindowsImage -ImagePath "$($driveLetter):\sources\install.wim"
 
             if (-not $WindowsImage -or ($WindowsImage -is [System.Array]))
             {
