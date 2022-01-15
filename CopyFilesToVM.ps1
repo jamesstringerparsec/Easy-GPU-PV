@@ -27,14 +27,20 @@ function Is-Administrator
     (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
 }
 
+Function Dismount-ISO {
+param (
+[string]$SourcePath
+)
+$disk = Get-Volume | Where-Object {$_.DriveType -eq "CD-ROM"} | select *
+Foreach ($d in $disk) {
+    Dismount-DiskImage -ImagePath $sourcePath | Out-Null
+    }
+}
+
 Function Mount-ISOReliable {
 param (
 [string]$SourcePath
 )
-$VirtualDiskDrives = Get-Volume | Where-Object {$_.DriveType -eq "CD-ROM"} | select *
-Foreach ($individualDrive in $VirtualDiskDrives) {
-    Dismount-DiskImage -ImagePath $sourcePath | Out-Null
-    }
 $mountResult = Mount-DiskImage -ImagePath $SourcePath
 $delay = 0
 Do {
@@ -56,6 +62,7 @@ Do {
 Until (($mountResult | Get-Volume).DriveLetter -ne $NULL)
 ($mountResult | Get-Volume).DriveLetter
 }
+
 
 Function ConcatenateVHDPath {
 param(
@@ -122,6 +129,7 @@ if (($params.VMName -notmatch "^[a-zA-Z0-9]+$") -or ($params.VMName.Length -gt 1
 if (([Environment]::OSVersion.Version.Build -lt 22000) -and ($params.GPUName -ne "AUTO")) {
     $ExitReason += "GPUName must be set to AUTO on Windows 10."
     }
+    Dismount-ISO -SourcePath $params.SourcePath 
 If ($ExitReason.Count -gt 0) {
     Write-Host "Script failed params check due to the following reasons:" -ForegroundColor DarkYellow
     ForEach ($IndividualReason in $ExitReason) {
@@ -2610,6 +2618,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             }
 
             # Close out the transcript and tell the user we're done.
+            Dismount-ISO -SourcePath $ISOPath
             Write-W2VInfo "Done."
             if ($transcripting)
             {
@@ -4377,7 +4386,6 @@ param(
         }
     else {
     SmartExit -ExitReason "Failed to create VHDX, stopping script"
-
     }
 }
 
