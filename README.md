@@ -38,7 +38,7 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 
 ### Values
   ```VMName = "GPUP"``` - Name of VM in Hyper-V and the computername / hostname  
-  ```SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"``` - path to Windows 10/ 11 ISO on your host   
+  ```SourcePath = "C:\Users\USERNAME\Downloads\Win11_English_x64.iso"``` - path to Windows 10/ 11 ISO on your host   
   ```Edition    = 6``` - Leave as 6, this means Windows 10/11 Pro  
   ```VhdFormat  = "VHDX"``` - Leave this value alone  
   ```DiskLayout = "UEFI"``` - Leave this value alone  
