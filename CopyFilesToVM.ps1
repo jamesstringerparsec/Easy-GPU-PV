@@ -1,6 +1,6 @@
 ﻿$params = @{
     VMName = "GPUPV"
-    SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"
+    SourcePath = "C:\Users\USERNAME\Downloads\Win11_English_x64.iso"
     Edition    = 6
     VhdFormat  = "VHDX"
     DiskLayout = "UEFI"
