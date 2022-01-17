@@ -1,4 +1,4 @@
-﻿
+
 
 Function Get-DesktopPC
 {
@@ -19,8 +19,10 @@ if ($build.CurrentBuild -ge 19041 -and ($($build.editionid -like 'Professional*'
     Return $true
     }
 Else {
-    Write-Warning "Only Windows 10 20H1 or Windows 11 (Pro or Enterprise) is supported"
-    Return $false
+    Write-Warning "Only Windows 10 20H1 or Windows 11 (Pro or Enterprise) is supported, adding Hyper V support patch for your different install..."
+	 invoke-item $PSScriptRoot\Compatability\hyperV.bat
+	 read-host “Press ENTER when the HyperV install script has completed to continue”
+    Return $true
     }
 }
 
