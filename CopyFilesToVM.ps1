@@ -17,6 +17,8 @@
     Username = "GPUVM"
     Password = "CoolestPassword!"
     Autologon = "true"
+    HorizontalResolution = 1920
+    VerticalResolution = 1080
 }
 
 Import-Module $PSSCriptRoot\Add-VMGpuPartitionAdapterFiles.psm1
@@ -4350,7 +4352,9 @@ param(
 [string]$Key,
 [string]$username,
 [string]$password,
-[string]$autologon
+[string]$autologon,
+[int]$HorizontalResolution,
+[int]$VerticalResolution
 )
     $VHDPath = ConcatenateVHDPath -VHDPath $VHDPath -VMName $VMName
     $DriveLetter = Mount-ISOReliable -SourcePath $SourcePath
@@ -4376,7 +4380,7 @@ param(
             Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
             }
         Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
-        Set-VMVideo -VMName $VMName -HorizontalResolution 1920 -VerticalResolution 1080
+        Set-VMVideo -VMName $VMName -HorizontalResolution $HorizontalResolution -VerticalResolution $VerticalResolution -ResolutionType Maximum
         Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
         Enable-VMTPM -VMName $VMName 
         Add-VMDvdDrive -VMName $VMName -Path $SourcePath
