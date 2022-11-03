@@ -2,8 +2,8 @@
 If you are opening this file in Powershell ISE you should modify the params section like so...
 
 Param (
-[string]$VMName = "NameofyourVM",
-[int]$GPUResourceAllocationPercentage = Precentage(e.g 50 or 25)
+    [string]$VMName = "NameofyourVM",
+    [int]$GPUResourceAllocationPercentage = 50
 )
 
 #>
@@ -11,7 +11,7 @@ Param (
 Param (
     [string]$VMName,
     [int]$GPUResourceAllocationPercentage
-    )
+)
 
 $VM = Get-VM -VMName $VMName
 
