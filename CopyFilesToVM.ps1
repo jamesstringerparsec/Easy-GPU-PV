@@ -103,6 +103,9 @@ Function Check-Params {
 
 $ExitReason = @()
 
+if ([ENVIRONMENT]::Is64BitProcess -eq $false) {
+    $ExitReason += "You are not using the correct version of Powershell, do not use Powershell(x86)."
+    }
 if ((Is-Administrator) -eq $false) {
     $ExitReason += "Script not running as Administrator, please run script as Administrator."
     }
