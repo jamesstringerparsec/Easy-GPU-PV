@@ -151,7 +151,7 @@ param(
 
     foreach ($line in $content) {
         if ($line -like "0Parameters="){
-            $line = "0Parameters=-team_id=$Team_ID -team_key=$Key"
+            $line = "0Parameters=$Team_ID $Key"
             $new += $line
             }
         Else {
