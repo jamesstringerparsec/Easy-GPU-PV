@@ -12,8 +12,8 @@ Next text is mostly taken from original Easy-GPU-PV project
 
 GPU-PV allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  It's the same technology that is used in WSL2, and Windows Sandbox.  
 
-Easy-GPU-PV aims to make this easier by automating the steps required to get a GPU-PV VM up and running.  
-Easy-GPU-PV does the following...  
+Interactive-Easy-GPU-PV aims to make this easier by automating the steps required to get a GPU-PV VM up and running.  
+Interactive-Easy-GPU-PV does the following...  
 1) Creates a VM of your choosing
 2) Automatically Installs Windows to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
