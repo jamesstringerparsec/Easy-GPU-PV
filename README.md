@@ -2,7 +2,7 @@
 A work-in-progress project created by [jamesstringerparsec] dedicated to making GPU Paravirtualization on Windows Hyper-V easier!  
 
 # User-Friendly-Easy-GPU-PV 
-A fork of the https://github.com/jamesstringerparsec/Easy-GPU-PV dedicated to make whole process as much easy as it possible
+A work-in-progress fork of the https://github.com/jamesstringerparsec/Easy-GPU-PV dedicated to make whole process as much easy as it possible
 
 Next text is mostly taken from original Easy-GPU-PV project:
 GPU-PV allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  It's the same technology that is used in WSL2, and Windows Sandbox.  
