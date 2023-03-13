@@ -9,11 +9,12 @@ A work-in-progress fork of the Easy-GPU-PV repository found at https://github.co
 GPU-PV allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  It's the same technology that is used in WSL2, and Windows Sandbox.  
 
 Interactive-Easy-GPU-PV aims to make this easier by automating the steps required to get a GPU-PV VM up and running.  
-Interactive-Easy-GPU-PV does the following...  
+This project provides the following...  
 1) Creates a VM of your choosing
 2) Automatically Installs Windows to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
 4) Installs [Parsec](https://parsec.app) to the VM, Parsec is an ultra low latency remote desktop app, use this to connect to the VM.  You can use Parsec for free non commercially. To use Parsec commercially, sign up to a [Parsec For Teams](https://parsec.app/teams) account  
+5) Configures Microsoft Remote Desktop to provide 3D accelerated remote session 
 
 ### Prerequisites:
 * A desktop computer running Windows 10 20H1+ Pro, Enterprise, or Education, or Windows 11 Pro, Enterprise, or Education, or Windows Server 2022. Windows 11 or Windows Server 2022 is preferred for better compatibility. The host and VM must have matching Windows versions, as mismatches can cause compatibility issues, blue-screens, or other problems. For example, Win10 21H1 + Win10 21H1 or Win11 21H2 + Win11 21H2.
@@ -24,17 +25,19 @@ Interactive-Easy-GPU-PV does the following...
 * Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell running as Administrator.  
 
 ### Instructions
-1. Make sure your system meets the prerequisites.
-2. [Download the Repo and extract.](https://github.com/jamesstringerparsec/Easy-GPU-PV/archive/refs/heads/main.zip)
-3. Search your system for Powershell ISE and run as Administrator.
-4. In the extracted folder you downloaded, run interactive script GPUP-management.ps1, select action 1: Create new VM with GPU acceleration, after all parameters will be set, VM starts creating  - this may take 5-10 minutes.
-5. Open and sign into Parsec on the VM.  You can use Parsec to connect to the VM up to 4K60FPS.
-6. You should be good to go!
+To get started with Interactive-Easy-GPU-PV, follow these steps:
+1. Make sure your system meets all the prerequisites mentioned in the documentation.
+2. Download the [Interactive-Easy-GPU-PV repository](https://github.com/jamesstringerparsec/Easy-GPU-PV/archive/refs/heads/main.zip) and extract it to a folder on your computer. You can download it from the project's GitHub page.
+3. Search for Powershell ISE on your computer and run it as Administrator.
+4. Navigate to the extracted folder you downloaded and run the interactive script named "GPUP-management.ps1". Select "Create new VM with GPU acceleration" when prompted and set any required parameters. The script will start creating the VM, which may take 5-10 minutes depending on your system.
+5. Once the VM is created, open and sign into Parsec on the VM. You can use Parsec to connect to the VM at up to 4K60FPS.
+6. You're all set, enjoy!
 
-### Upgrading GPU Drivers when you update the host GPU Drivers
-It's important to update the VM GPU Drivers after you have updated the Host GPUs drivers. You can do this by...  
-1. Reboot the host after updating GPU Drivers.  
-2. Open Powershell as administrator, run interactive script GPUP-management.ps1, select action 3: Copy GPU Drivers from Host to VM. 
+### Upgrading VM GPU Drivers after you update the host GPU Drivers
+To ensure proper functioning of the VM, it's important to update the GPU drivers inside the VM after updating the drivers on the host machine. To do this, follow these steps:
+1. After updating the GPU drivers on the host machine, reboot it.
+2. Open Powershell as an administrator, navigate to the extracted folder of the Interactive-Easy-GPU-PV repo and run the interactive script GPUP-management.ps1.
+3. Select action 3: Copy GPU Drivers from Host to VM. This will copy the updated GPU drivers from the host machine to the VM.
 
 
 ### Thanks to:  
