@@ -2,7 +2,7 @@
 A work-in-progress project created by ***jamesstringerparsec*** dedicated to making GPU Paravirtualization on Windows Hyper-V easier!  
 
 # Interactive-Easy-GPU-PV 
-A work-in-progress fork of the Easy-GPU-PV repository found at https://github.com/jamesstringerparsec/Easy-GPU-PV. The goal of the project is to simplify the entire process as much as possible. The main script is interactive, so users don't have to define any parameters in advance. Instead, parameters can be chosen while the script is running, making the process much easier.
+A work-in-progress fork of the [Easy-GPU-PV repository](https://github.com/jamesstringerparsec/Easy-GPU-PV). The goal of the project is to simplify the entire process as much as possible. The main script is interactive, so users don't have to define any parameters in advance. Instead, parameters can be chosen while the script is running, making the process much easier.
 
 ***The following text is primarily taken from the original Easy-GPU-PV project. I've made some modifications and improvements to ensure that it accurately reflects the current state of the project and provides relevant information.***
 
