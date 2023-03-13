@@ -14,7 +14,7 @@ This project provides the following...
 2) Automatically Installs Windows to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
 4) Installs [Parsec](https://parsec.app) to the VM, Parsec is an ultra low latency remote desktop app, use this to connect to the VM.  You can use Parsec for free non commercially. To use Parsec commercially, sign up to a [Parsec For Teams](https://parsec.app/teams) account  
-5) Configures Microsoft Remote Desktop to provide 3D accelerated remote session 
+5) Configures Microsoft Remote Desktop to provide 3D accelerated remote session. **Note that 3D acceleration during a remote session is only available in windowed mode. This is useful for tasks such as using CAD, graphic editors, windowed mode games etc.**
 
 ### Prerequisites:
 * A desktop computer running Windows 10 20H1+ Pro, Enterprise, or Education, or Windows 11 Pro, Enterprise, or Education, or Windows Server 2022. Windows 11 or Windows Server 2022 is preferred for better compatibility. The host and VM must have matching Windows versions, as mismatches can cause compatibility issues, blue-screens, or other problems. For example, Win10 21H1 + Win10 21H1 or Win11 21H2 + Win11 21H2.
@@ -26,18 +26,18 @@ This project provides the following...
 
 ### Instructions
 To get started with Interactive-Easy-GPU-PV, follow these steps:
-1. Make sure your system meets all the prerequisites mentioned in the documentation.
-2. Download the [Interactive-Easy-GPU-PV repository](https://github.com/jamesstringerparsec/Easy-GPU-PV/archive/refs/heads/main.zip) and extract it to a folder on your computer. You can download it from the project's GitHub page.
-3. Search for Powershell ISE on your computer and run it as Administrator.
-4. Navigate to the extracted folder you downloaded and run the interactive script named "GPUP-management.ps1". Select "Create new VM with GPU acceleration" when prompted and set any required parameters. The script will start creating the VM, which may take 5-10 minutes depending on your system.
-5. Once the VM is created, open and sign into Parsec on the VM. You can use Parsec to connect to the VM at up to 4K60FPS.
-6. You're all set, enjoy!
+1) Make sure your system meets all the prerequisites mentioned in the documentation.
+2) Download the [Interactive-Easy-GPU-PV repository](https://github.com/jamesstringerparsec/Easy-GPU-PV/archive/refs/heads/main.zip) and extract it to a folder on your computer. You can download it from the project's GitHub page.
+3) Search for Powershell ISE on your computer and run it as Administrator.
+4) Navigate to the extracted folder you downloaded and run the interactive script named "GPUP-management.ps1". Select "Create new VM with GPU acceleration" when prompted and set any required parameters. The script will start creating the VM, which may take 5-10 minutes depending on your system.
+5) Once the VM is created, open and sign into Parsec on the VM. You can use Parsec to connect to the VM at up to 4K60FPS.
+6) You're all set, enjoy!
 
 ### Upgrading VM GPU Drivers after you update the host GPU Drivers
 To ensure proper functioning of the VM, it's important to update the GPU drivers inside the VM after updating the drivers on the host machine. To do this, follow these steps:
-1. After updating the GPU drivers on the host machine, reboot it.
-2. Open Powershell as an administrator, navigate to the extracted folder of the Interactive-Easy-GPU-PV repo and run the interactive script GPUP-management.ps1.
-3. Select action 3: Copy GPU Drivers from Host to VM. This will copy the updated GPU drivers from the host machine to the VM.
+1) After updating the GPU drivers on the host machine, reboot it.
+2) Open Powershell as an administrator, navigate to the extracted folder of the Interactive-Easy-GPU-PV repo and run the interactive script GPUP-management.ps1.
+3) Select action 3: Copy GPU Drivers from Host to VM. This will copy the updated GPU drivers from the host machine to the VM.
 
 
 ### Thanks to:  
