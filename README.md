@@ -14,7 +14,7 @@ This project provides the following...
 2) Automatically Installs Windows to the VM
 3) Partitions your GPU of choice and copies the required driver files to the VM  
 4) Installs [Parsec](https://parsec.app) to the VM, Parsec is an ultra low latency remote desktop app, use this to connect to the VM.  You can use Parsec for free non commercially. To use Parsec commercially, sign up to a [Parsec For Teams](https://parsec.app/teams) account  
-5) Configures Microsoft Remote Desktop to provide 3D accelerated remote session. **Note that 3D acceleration during a remote session is only available in windowed mode. This is useful for tasks such as using CAD, graphic editors, windowed mode games etc.**
+5) Configures Microsoft Remote Desktop to provide 3D accelerated remote session. Note that 3D acceleration during a Microsoft RDP remote session is only available in windowed mode. This is useful for tasks such as using CAD, graphic editors, windowed mode games etc.
 
 ### Prerequisites:
 * A desktop computer running Windows 10 20H1+ Pro, Enterprise, or Education, or Windows 11 Pro, Enterprise, or Education, or Windows Server 2022. Windows 11 or Windows Server 2022 is preferred for better compatibility. The host and VM must have matching Windows versions, as mismatches can cause compatibility issues, blue-screens, or other problems. For example, Win10 21H1 + Win10 21H1 or Win11 21H2 + Win11 21H2.
