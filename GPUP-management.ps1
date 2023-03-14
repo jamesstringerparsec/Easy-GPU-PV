@@ -4119,7 +4119,7 @@ function BoolToYesNo {
 	param([bool]$value)
 	if ($value -eq $true) {
 		return 'Y'
-	else {
+	} else {
 		return 'N'
 	}
 }
