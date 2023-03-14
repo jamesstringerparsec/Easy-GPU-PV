@@ -3964,7 +3964,8 @@ function Get-HyperVSwitchAdapter {
     param()
     Write-Host "Available Virtual Network Switches..." -ForegroundColor Yellow
     $Switches = Get-VMSwitch | Select-Object -Property SwitchType, Name
-    switch ($Switches.Count) {
+    $Switches | %{$count++}
+    switch ($Count) {
         0 { $Name = 'Default Switch'
             Write-Warning "There isn't any Virtual Network Switch" 
             break }
