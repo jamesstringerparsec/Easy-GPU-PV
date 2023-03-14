@@ -385,10 +385,7 @@ function Dismount-ISO {
     )
     $disk = Get-Volume | Where-Object {$_.DriveType -eq "CD-ROM"} | select *
     Foreach ($d in $disk) {
-        try {
-            Dismount-DiskImage -ImagePath $sourcePath | Out-Null
-        } catch {
-        }
+        Dismount-DiskImage -ImagePath $sourcePath  -ErrorAction SilentlyContinue
     }
 }
 #========================================================================
@@ -3659,11 +3656,7 @@ function Add-VMGpuPartitionAdapterFiles {
         $DriverFiles = @()
         $ModifiedDeviceID = $d.DeviceID -replace "\\", "\\"
         $Antecedent = "\\$($hostname)\ROOT\cimv2:Win32_PNPSignedDriver.DeviceID=""$ModifiedDeviceID"""
-        try {
-            $DriverFiles += Get-WmiObject Win32_PNPSignedDriverCIMDataFile | where {$_.Antecedent -eq $Antecedent}
-        } catch {
-            continue
-        }
+        $DriverFiles += Get-WmiObject Win32_PNPSignedDriverCIMDataFile -ErrorAction SilentlyContinue | where {$_.Antecedent -eq $Antecedent}
         $DriverName = $d.DeviceName
         $DriverID = $d.DeviceID
         if ($DriverName -like "NVIDIA*") {
@@ -4214,6 +4207,17 @@ function Get-VMParams {
 #========================================================================
 
 #========================================================================
+function Start-VMandConnect {
+	param([string]$Name)
+    Start-VM -Name $Name
+    Start-Sleep -s 5
+    If ((Get-Process VMconnect -ErrorAction SilentlyContinue).Length -eq 0) {
+        VMconnect $env:COMPUTERNAME $Name
+    }
+}
+#========================================================================
+
+#========================================================================
 #Script executing section
 Clear-Host
 Write-Host "System is checking ..." -ForegroundColor Yellow
@@ -4251,11 +4255,11 @@ If ((Is-Administrator) -and (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) 
     
     If ($Global:StateWasRunning){
         Write-Host "Previous State was running so starting VM..."
-        Start-VM -Name $Global:VM.Name
+        Start-VMandConnect -Name $Global:VM.Name
     }
     
     if ($Action -eq 1) {
-        Start-VM -Name $params.VMName
+        Start-VMandConnect -Name $params.VMName
         $m = "If all went well the Virtual Machine will have started, 
             `rIn a few minutes it will load the Windows desktop." 
         if (($params.Parsec -eq $true) -and ($params.rdp -eq $false)) {
