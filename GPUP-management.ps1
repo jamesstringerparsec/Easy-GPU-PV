@@ -2508,7 +2508,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSystem)\ControlSet001\Services\FsDepends\Parameters" -Name "VirtualDiskExpandOnMount" -Value 4
                 }
                 if ($NumLock -eq $true) {
-                    Set-W2VItemProperty -Path "HKLM:\$($hiveDefault)\Control Panel\Keyboard" -Name "InitialKeyboardIndicators" -Value 2
+                    Set-W2VItemProperty -Path "HKLM:\$($hiveDefault)\Control Panel\Keyboard" -Name "InitialKeyboardIndicators" -Value 80000002
                 }
                 Dismount-RegistryHive -HiveMountPoint $hiveSystem
                 Dismount-RegistryHive -HiveMountPoint $hiveSoftware
