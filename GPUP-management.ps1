@@ -3964,20 +3964,21 @@ function Get-HyperVSwitchAdapter {
     param()
     Write-Host "Available Virtual Network Switches..." -ForegroundColor Yellow
     $Switches = Get-VMSwitch | Select-Object -Property SwitchType, Name
+    $count = 0
     $Switches | %{$count++}
-    switch ($Count) {
+    switch ($count) {
         0 { $Name = 'Default Switch'
             Write-Warning "There isn't any Virtual Network Switch" 
             break }
         1 { $Name = $Switches[0].Name
-            Write-W2VInfo "There is only one Virtual Network Switch: $Name" 
+            Write-W2VInfo "There is only one Virtual Network Switch: $($Switches[0] | Select-Object -Property Name -ExpandProperty Name)" 
             break }
         default { 
             $i = 0
             foreach ($switch in $Switches) {
                 Write-Host "$([string](++$i)): [$($switch | Select-Object -Property Name -ExpandProperty SwitchType)] $($switch | Select-Object -Property Name -ExpandProperty Name)"
             }
-            $VMParam = New-VMParameter -name 'VSIndex' -title "Select Virtual Network Switch (press $([char]0x23CE) to default)" -range @(1, $Switches.Count + 1) -rangeIsHidden -AllowNull
+            $VMParam = New-VMParameter -name 'VSIndex' -title "Select Virtual Network Switch (press $([char]0x23CE) to default)" -range @(1, $Count + 1) -rangeIsHidden -AllowNull
             $s = Get-VMParam -VMParam $VMParam
             if ($s.length -eq 0) {
                 $Name = 'Default Switch'
