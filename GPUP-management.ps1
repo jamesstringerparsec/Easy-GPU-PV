@@ -437,6 +437,7 @@ function SmartExit {
         [switch]$NoHalt,
         [string]$ExitReason
     )
+    Set-PSDebug -Off
     if (($host.name -eq 'Windows PowerShell ISE Host') -or ($host.Name -eq 'Visual Studio Code Host')) {
         Write-Host $ExitReason
         Exit
@@ -503,7 +504,7 @@ function New-GPUEnabledVM {
     $unattendPath = Modify-AutoUnattend -username "$username" -password "$password" -autologon $autologon -hostname $VMName -CopyRegionalSettings $CopyRegionalSettings -xml $unattend
     $MaxAvailableVersion = (Get-VMHostSupportedVersion).Version | Where-Object {$_.Major -lt 254}| Select-Object -Last 1 
     try {
-        Convert-WindowsImage -SourcePath $SourcePath -ISODriveLetter $DriveLetter -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -Parsec:$Parsec -ParsecVDD:$ParsecVDD -RemoteDesktopEnable:$rdp -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes | Out-Null
+        Convert-WindowsImage -SourcePath $SourcePath -ISODriveLetter $DriveLetter -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -Parsec:$Parsec -ParsecVDD:$ParsecVDD -RemoteDesktopEnable:$rdp -NumLock:$NumLock -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes | Out-Null
     } catch {
     }
     if (Test-Path $vhdPath) {
@@ -567,7 +568,7 @@ function Setup-RemoteDesktop {
     $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
     "[Logon]" >> $path
     "0CmdLine=Install.ps1" >> $path
-    "0Parameters=$rdp $Parsec $ParsecVDD $NumLock $false $Team_ID $Key" >> $path 
+    "0Parameters=$rdp $Parsec $ParsecVDD $NumLock $Team_ID $Key" >> $path 
 
     $path = "$DriveLetter\Windows\system32\GroupPolicy\gpt.ini"
     "[General]" >> $path
@@ -4128,6 +4129,7 @@ function BoolToYesNo {
 #========================================================================
 function Get-VMParams {
     param()
+
     Get-VMName
     
     Write-Host "Virtual Machine files location: ""$(Get-VMHost | Select-Object VirtualMachinePath -ExpandProperty VirtualMachinePath)\""" -ForegroundColor Yellow
@@ -4159,9 +4161,6 @@ function Get-VMParams {
         $null = Get-VMParam -VMParam $VMParam
     }
 
-    $VMParam = New-VMParameter -name 'NumLock' -title "Enable NumLock at Logon? [Y/N] [default: $(BoolToYesNo $params.NumLock)] (press $([char]0x23CE) to enable)" -AllowedValues @{Y = $true; N = $false} -AllowNull
-    $null = Get-VMParam -VMParam $VMParam 
-
     $VMParam = New-VMParameter -name 'CPUCores' -title "Specify Number of virtual proccesosrs [default: $($params.CPUCores)] (press $([char]0x23CE) to default)" -range @(1, (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors) -AllowNull
     $null = Get-VMParam -VMParam $VMParam
  
@@ -4181,7 +4180,10 @@ function Get-VMParams {
  
     $VMParam = New-VMParameter -name 'CopyRegionalSettings' -title "Copy Host OS regional settings (locale, keyboard layout etc.) to Guest OS? [Y/N] [default: Y] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     $null = Get-VMParam -VMParam $VMParam
-    
+
+    $VMParam = New-VMParameter -name 'NumLock' -title "Enable NumLock at Logon? [Y/N] [default: $(BoolToYesNo $params.NumLock)] (press $([char]0x23CE) to enable)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $null = Get-VMParam -VMParam $VMParam 
+
     Get-RemoteDesktopApp
     if ($params.Parsec -eq $true) { 
         $VMParam = New-VMParameter -name 'ParsecVDD' -title "Install Parsec Virtual Display Driver? [Y/N] [default: $(BoolToYesNo $params.ParsecVDD)] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
@@ -4236,11 +4238,13 @@ If ((Is-Administrator) -and (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) 
     
     If ($Global:StateWasRunning){
         Write-Host "Previous State was running so starting VM..."
-        $null = Start-VM $Global:VM.Name
+        $null = Start-VM -Name $Global:VM.Name
+        VMconnect $env:COMPUTERNAME $Global:VM.Name
     }
-    Write-W2VInfo "Done."
+    
     if ($Action -eq 1) {
         $null = Start-VM -Name $params.VMName
+        VMconnect $env:COMPUTERNAME $params.VMName
         $m = "If all went well the Virtual Machine will have started, 
             `rIn a few minutes it will load the Windows desktop." 
         if (($params.Parsec -eq $true) -and ($params.rdp -eq $false)) {
@@ -4262,7 +4266,9 @@ If ((Is-Administrator) -and (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) 
                 `rSign up to Parsec at https://Parsec.app
                 `rhttps://www.microsoft.com/store/productId/9WZDNCRFJ3PS"
         }
-    } 
+    } else {
+        $m = "Done..."
+    }
     SmartExit -ExitReason $m
 }
 #========================================================================

@@ -4,19 +4,9 @@ param(
     $Parsec,
     $ParsecVDD,
     $NumLock,
-    $secondCall,
     $team_id,
     $key
 ) 
-#========================================================================
-
-#========================================================================
-$psscriptIni = 
-@"
-[Logon]
-0CmdLine=Install.ps1
-0Parameters=$rdp $Parsec $ParsecVDD $NumLock $true $Team_ID $Key
-"@
 #========================================================================
 
 #========================================================================
@@ -36,30 +26,7 @@ function Remove-File {
 #========================================================================
 
 #========================================================================
-Remove-File "C:\unattend.xml"
-if ($SecondCall -eq $true) {
-    Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
-    Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\Logon\Install.ps1"
-    if ($NumLock -eq $true) {
-        path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Upsscripts.ini"
-        "[Logon]" >> $$path
-        "0CmdLine=NumLockEnable.ps1" >> $path
-        "0Parameters=" >> $path
-        
-        $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon\NumLockEnable.ps1"
-        "if ($NumLock -eq $true) {" >> $path 
-        "   $WshShell = New-Object -ComObject WScript.Shell" >> $path
-        "   if ([console]::NumberLock -eq $false) {" >> $path
-        "       $WshShell.SendKeys(""{NUMLOCK}"")" >> $path
-        "   }" >> $path
-        "}" >> $path
-    }
-    Exit
-}
-#========================================================================
-
-#========================================================================
-function Allow-InBoundConnections {
+function Set-AllowInBoundConnections {
     param()
     if ((Get-NetFirewallProfile -Profile Domain).DefaultInboundAction -ne 'Allow') {
         Set-NetFirewallProfile -Profile Domain -DefaultInboundAction 'Allow'
@@ -138,7 +105,7 @@ while(!(Test-NetConnection Google.com).PingSucceeded){
 Get-ChildItem -Path C:\ProgramData\Easy-GPU-P -Recurse | Unblock-File
 
 if ($rdp -eq $true) {
-    Allow-InBoundConnections
+    Set-AllowInBoundConnections
 }
 
 if ($Parsec -eq $true) {
@@ -167,5 +134,26 @@ if ($Parsec -eq $true) {
     }
 }
 
-Set-Content -path C:\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini -value $psscriptIni
+Remove-File "C:\unattend.xml"
+Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
+Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\Logon\Install.ps1"
+#========================================================================
+
+#========================================================================
+if ($NumLock -eq $true) {
+@"
+[Logon]
+0CmdLine=NumLockEnable.ps1
+0Parameters=
+"@ >> "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
+
+@"
+if ($NumLock -eq $true) {
+   $WshShell = New-Object -ComObject WScript.Shell
+   if ([console]::NumberLock -eq $false) {
+       $WshShell.SendKeys("{NUMLOCK}")
+   }
+}  
+"@ >> "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon\NumLockEnable.ps1"
+}
 #========================================================================
