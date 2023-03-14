@@ -565,7 +565,7 @@ function Setup-RemoteDesktop {
     $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
     "[Logon]" >> $path
     "0CmdLine=Install.ps1" >> $path
-    "0Parameters=$rdp $Parsec $ParsecVDD $Team_ID $Key" >> $path 
+    "0Parameters=$rdp $Parsec $ParsecVDD $NumLock $Team_ID $Key" >> $path 
 
     if ($NumLock -eq $true) {
         $path = "$DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\psscripts.ini"

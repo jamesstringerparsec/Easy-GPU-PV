@@ -3,9 +3,19 @@ param(
     $rdp,
     $Parsec,
     $ParsecVDD,
+    $NumLock,
     $team_id,
     $key
 ) 
+#========================================================================
+
+#========================================================================
+if ($NumLock -eq $true) {
+    $WshShell = New-Object -ComObject WScript.Shell
+    if ([console]::NumberLock -eq $false) {
+        $WshShell.SendKeys("{NUMLOCK}")
+    }
+}
 #========================================================================
 
 #========================================================================
@@ -127,4 +137,19 @@ if ($Parsec -eq $true) {
 Remove-File "C:\unattend.xml"
 Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
 Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\Logon\Install.ps1"
+#========================================================================
+
+#========================================================================
+if ($NumLock -eq $true) {
+    $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
+    "[Logon]" >> $path
+    "0CmdLine=NumLockEnable.ps1" >> $path
+    "0Parameters=" >> $path
+    
+    $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Startup\NumLockEnable.ps1"
+    "`$WshShell = New-Object -ComObject WScript.Shell" >> $path
+    "if ([console]::NumberLock -eq `$false) {" >> $path
+    "    `$WshShell.SendKeys(""{NUMLOCK}"")" >> $path
+    "}" >> $path
+}
 #========================================================================
