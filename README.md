@@ -4,6 +4,8 @@ A work-in-progress project created by [jamesstringerparsec](https://github.com/j
 # Interactive-Easy-GPU-PV 
 A work-in-progress fork of the [Easy-GPU-PV repository](https://github.com/jamesstringerparsec/Easy-GPU-PV). The goal of the project is to simplify the entire process as much as possible. The main script is interactive, so users don't have to define any parameters in advance. Instead, parameters can be chosen while the script is running, making the process much easier.
 
+![Administrator_ Windows PowerShell 2023-03-14 21-18-30](https://user-images.githubusercontent.com/77991615/225123630-151be5d3-83fc-4d05-b1b2-019ff80adb33.gif)
+
 ***The following text is primarily taken from the original Easy-GPU-PV project. I've made some modifications and improvements to ensure that it accurately reflects the current state of the project and provides relevant information.***
 
 GPU-PV allows you to partition your systems dedicated or integrated GPU and assign it to several Hyper-V VMs.  It's the same technology that is used in WSL2, and Windows Sandbox.  
