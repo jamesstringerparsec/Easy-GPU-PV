@@ -32,6 +32,7 @@ $params = @{
     Parsec = $true
     CopyRegionalSettings = $true
     ParsecVDD = $false
+    NumLock = $true
 }
 #========================================================================
 
@@ -479,7 +480,8 @@ function New-GPUEnabledVM {
         [bool]$rdp,
         [bool]$Parsec,
         [bool]$CopyRegionalSettings,
-        [bool]$ParsecVDD
+        [bool]$ParsecVDD,
+        [bool]$NumLock
     )
     $VHDPath = ConcatenateVHDPath -VHDPath $VHDPath -VMName $VMName
     $DriveLetter = Mount-ISOReliable -SourcePath $SourcePath
@@ -541,17 +543,18 @@ function New-GPUEnabledVM {
 #========================================================================
 
 #========================================================================
-function Setup-RemoteDesktopApp {
+function Setup-RemoteDesktop {
     param(
         [Parameter(Mandatory = $true)][bool]$Parsec,
         [bool]$ParsecVDD,
         [Parameter(Mandatory = $true)][bool]$rdp,
+        [bool]$NumLock,
         [Parameter(Mandatory = $true)][string]$DriveLetter,
         [string]$Team_ID,
         [string]$Key
     )
     
-    if (($Parsec -eq $false) -and ($rdp -eq $false)) {
+    if (($Parsec -eq $false) -and ($rdp -eq $false) -and ($NumLock -eq $false)) {
         return $null
     }
     
@@ -561,14 +564,16 @@ function Setup-RemoteDesktopApp {
     New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown -ItemType directory -Force | Out-Null
     New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory -Force | Out-Null
     
-    "[Logon]" >> $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini
-    "0CmdLine=Install.ps1" >> $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini 
-    "0Parameters=$rdp $Parsec $ParsecVDD $false $Team_ID $Key" >> $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini 
+    $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
+    "[Logon]" >> $path
+    "0CmdLine=Install.ps1" >> $path
+    "0Parameters=$rdp $Parsec $ParsecVDD $NumLock $false $Team_ID $Key" >> $path 
 
-    "[General]" >> $DriveLetter\Windows\system32\GroupPolicy\gpt.ini
-    "gPCUserExtensionNames=[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B66650-4972-11D1-A7CA-0000F87571E3}]" >> $DriveLetter\Windows\system32\GroupPolicy\gpt.ini
-    "Version=131074" >> $DriveLetter\Windows\system32\GroupPolicy\gpt.ini
-    "gPCMachineExtensionNames=[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}]" >> $DriveLetter\Windows\system32\GroupPolicy\gpt.ini
+    $path = "$DriveLetter\Windows\system32\GroupPolicy\gpt.ini"
+    "[General]" >> $path
+    "gPCUserExtensionNames=[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B66650-4972-11D1-A7CA-0000F87571E3}]" >> $path
+    "Version=131074" >> $path
+    "gPCMachineExtensionNames=[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}]" >> $path
     
     Copy-Item -Path $psscriptroot\VMScripts\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
     
@@ -681,6 +686,9 @@ function Convert-WindowsImage {
   
     .PARAMETER ParsecVDD
             Install Remote Desktop app Parsec Virtual Display Driver
+
+    .PARAMETER Numlock
+            Enable / Disable NumLock at logon
             
     .PARAMETER Feature
             Enables specified Windows Feature(s). Note that you need to specify the Internal names
@@ -888,6 +896,10 @@ function Convert-WindowsImage {
         [Parameter(ParameterSetName = "SRC")]
         [bool]
         $ParsecVDD,
+    
+        [Parameter(ParameterSetName = "SRC")]
+        [bool]
+        $NumLock,
         
         [Parameter(ParameterSetName = "SRC")]
         [Alias("Unattend")]
@@ -2484,10 +2496,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     Write-W2VInfo "Disabling automatic $VHDFormat expansion for Native Boot"
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSystem)\ControlSet001\Services\FsDepends\Parameters" -Name "VirtualDiskExpandOnMount" -Value 4
                 }
-                if ([console]::NumberLock -eq $true) {
-					if (-not (Test-Path "HKU:")) {
-						New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS	
-					}	
+                if ($NumLock -eq $true) {
                     Set-W2VItemProperty -Path "HKLM:\$($hiveDefault)\Control Panel\Keyboard" -Name "InitialKeyboardIndicators" -Value 2
                 }
                 Dismount-RegistryHive -HiveMountPoint $hiveSystem
@@ -2529,8 +2538,8 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                 Write-W2VInfo "Setting up Parsec to install at boot"
             }
             
-            if (($Parsec -eq $true) -or ($RemoteDesktopEnable -eq $true)) {
-                Setup-RemoteDesktopApp -Parsec:$Parsec -ParsecVDD:$ParsecVDD -rdp:$RemoteDesktopEnable -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
+            if (($Parsec -eq $true) -or ($RemoteDesktopEnable -eq $true) -or ($NumLock -eq $true)) {
+                Setup-RemoteDesktop -Parsec:$Parsec -ParsecVDD:$ParsecVDD -rdp:$RemoteDesktopEnable -NumLock:$NumLock -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
             }
             
             if ($DiskLayout -eq "UEFI") {
@@ -3787,7 +3796,7 @@ function Get-RemoteDesktopApp {
     param()
     Write-Host "Available Remote Desktop apps:" -ForegroundColor Yellow
     Write-Host "1: Parsec (proprietary app mostly for gaming)"
-    Write-Host "2: RDP (3D Acceleration available only in windowed mode)"
+    Write-Host "2: RDP (less performance 3D Acceleration than Parsec provides)"
     Write-Host "3: Parsec & RDP"
     Write-Host "4: None of them"
     if (($params.Parsec -eq $true) -and ($params.rdp -eq $false)) {
@@ -4149,7 +4158,10 @@ function Get-VMParams {
         $VMParam = New-VMParameter -name 'MemoryMaximum' -title "Specify maximum amount of dynamic RAM dedicated for VM [default: $(($params.MemoryMaximum / 1Gb))GB] (press $([char]0x23CE) to default)" -range @($params.MemoryAmount, 128Gb) -AllowNull
         $null = Get-VMParam -VMParam $VMParam
     }
-    
+
+    $VMParam = New-VMParameter -name 'NumLock' -title "Enable NumLock at Logon? [Y/N] [default: $(BoolToYesNo $params.NumLock)] (press $([char]0x23CE) to enable)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $null = Get-VMParam -VMParam $VMParam 
+
     $VMParam = New-VMParameter -name 'CPUCores' -title "Specify Number of virtual proccesosrs [default: $($params.CPUCores)] (press $([char]0x23CE) to default)" -range @(1, (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors) -AllowNull
     $null = Get-VMParam -VMParam $VMParam
  
