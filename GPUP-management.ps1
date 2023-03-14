@@ -4242,7 +4242,6 @@ If ((Is-Administrator) -and (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) 
     }
     
     if ($Action -eq 1) {
-        VMconnect $env:COMPUTERNAME $params.VMName
         Start-VM -Name $params.VMName
         $m = "If all went well the Virtual Machine will have started, 
             `rIn a few minutes it will load the Windows desktop." 
