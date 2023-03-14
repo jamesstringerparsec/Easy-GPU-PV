@@ -4238,13 +4238,12 @@ If ((Is-Administrator) -and (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) 
     
     If ($Global:StateWasRunning){
         Write-Host "Previous State was running so starting VM..."
-        $null = Start-VM -Name $Global:VM.Name
-        VMconnect $env:COMPUTERNAME $Global:VM.Name
+        Start-VM -Name $Global:VM.Name
     }
     
     if ($Action -eq 1) {
-        $null = Start-VM -Name $params.VMName
         VMconnect $env:COMPUTERNAME $params.VMName
+        Start-VM -Name $params.VMName
         $m = "If all went well the Virtual Machine will have started, 
             `rIn a few minutes it will load the Windows desktop." 
         if (($params.Parsec -eq $true) -and ($params.rdp -eq $false)) {
