@@ -125,9 +125,9 @@ if ($Parsec -eq $true) {
         } catch {
         }
     }
-	if ($ParsecVDD -eq $true) {
-		Install-ParsecVDD
-	}
+    if ($ParsecVDD -eq $true) {
+        Install-ParsecVDD
+    }
     Install-VBCable 
     if ($ParsecVDD -eq $true) {
         Set-EasyGPUPScheduledTask -TaskName "Monitor Parsec VDD State" -Path "%programdata%\Easy-GPU-P\VDDMonitor.ps1"

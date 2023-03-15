@@ -1,4 +1,4 @@
-#========================================================================
+﻿#========================================================================
 $Global:VM
 $Global:VHD
 $Global:ServerOS
@@ -330,27 +330,27 @@ function Set-W2VItemProperty {
         [string[]]$Exclude, 
         [pscredential]$Credential, 
         [string]$Type,
-		[string]$PropertyType,
+        [string]$PropertyType,
         [object]$CommonParameters
     )
     if ((Test-Path $path) -eq $false) {
         New-Item $path -Force
     }   
-	if ((Get-ItemProperty -path $path -name $Name -ErrorAction SilentlyContinue).Count -eq 0) {
-		if ($PSBoundParameters.Type.Length -ne 0) {
-			if ($PSBoundParameters.PropertyType.Length -eq 0) {
-				$PSBoundParameters.PropertyType = $PSBoundParameters.Type
-			}
-			$PSBoundParameters.Remove('Type')
-		}
-		$null = New-ItemProperty @PSBoundParameters
-	} else {
-		if ($PSBoundParameters.PropertyType.Length -ne 0) {
-			if ($PSBoundParameters.Type.Length -eq 0) {
-				$PSBoundParameters.Type = $PSBoundParameters.PropertyType
-			}
-			$PSBoundParameters.Remove('PropertyType')
-		}
+    if ((Get-ItemProperty -path $path -name $Name -ErrorAction SilentlyContinue).Count -eq 0) {
+        if ($PSBoundParameters.Type.Length -ne 0) {
+            if ($PSBoundParameters.PropertyType.Length -eq 0) {
+                $PSBoundParameters.PropertyType = $PSBoundParameters.Type
+            }
+            $PSBoundParameters.Remove('Type')
+        }
+        $null = New-ItemProperty @PSBoundParameters
+    } else {
+        if ($PSBoundParameters.PropertyType.Length -ne 0) {
+            if ($PSBoundParameters.Type.Length -eq 0) {
+                $PSBoundParameters.Type = $PSBoundParameters.PropertyType
+            }
+            $PSBoundParameters.Remove('PropertyType')
+        }
         $null = Set-ItemProperty @PSBoundParameters
     }
 }   
@@ -501,7 +501,7 @@ function New-GPUEnabledVM {
     $Report = Get-ISOWindowsEditions -DriveLetter $DriveLetter
     $LastReportNum = $Report.Count
     $params.Edition = $LastReportNum
-    $VMParam = New-VMParameter -name 'CPUCores' -title "Select Index of the Windows Edition [default: $LastReportNum] (press $([char]0x23CE) to skip)" -range @(1, $LastReportNum) -AllowNull $true
+    $VMParam = New-VMParameter -name 'CPUCores' -title "Select Index of the Windows Edition [default: $LastReportNum] (press `"Return`" to skip)" -range @(1, $LastReportNum) -AllowNull $true
     $null = Get-VMParam -VMParam $VMParam
     
     if ($(Get-VM -Name $VMName -ErrorAction SilentlyContinue) -ne $NULL) {
@@ -519,7 +519,7 @@ function New-GPUEnabledVM {
     }
     if (Test-Path $vhdPath) {
         New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -Path $VMPath -VHDPath $VhdPath -Generation 2 -SwitchName $NetworkSwitch -Version $MaxAvailableVersion | Out-Null
-		Set-VMMemory -VMName $VMName -DynamicMemoryEnabled:$DynamicMemoryEnabled
+        Set-VMMemory -VMName $VMName -DynamicMemoryEnabled:$DynamicMemoryEnabled
         Set-VM -Name $VMName -ProcessorCount $CPUCores 
         Set-VM -Name $VMName -CheckpointType Disabled 
         Set-VM -Name $VMName -MemoryMinimum $MemoryAmount
@@ -3570,7 +3570,7 @@ function Get-VMGpuPartitionAdapterFriendlyName {
         Write-Host "$([string](++$i)): $($GPUname)"
         $GPUs.Add($GPUname);
     }
-    $m = "Select GPU ID [default: 0] (press $([char]0x23CE) to default)"
+    $m = "Select GPU ID [default: 0] (press `"Return`" to default)"
     while ($true) {
         try {
             $s = Read-Host -Prompt $m
@@ -3828,7 +3828,7 @@ function Get-RemoteDesktopApp {
     } else {
         $d = 4
     }
-    $m = "Select an app you're going to use in VM [default: $d] (Press $([char]0x23CE) to default}"
+    $m = "Select an app you're going to use in VM [default: $d] (Press `"Return`" to default}"
     while ($true) {
         try {
             $s = Read-Host -Prompt $m
@@ -3855,7 +3855,7 @@ function Get-RemoteDesktopApp {
 #========================================================================
 function Set-ServerOSGroupPolicies {
     param()
-	$path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV"  
+    $path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV"  
     Set-W2VItemProperty -Path $path -Name "RequireSecureDeviceAssignment" -Value 0 -PropertyType "DWORD"
     Set-W2VItemProperty -Path $path -Name "RequireSupportedDeviceAssignment" -Value 0 -PropertyType "DWORD"
 }
@@ -3988,7 +3988,7 @@ function Get-HyperVSwitchAdapter {
             foreach ($switch in $Switches) {
                 Write-Host "$([string](++$i)): [$($switch | Select-Object -Property Name -ExpandProperty SwitchType)] $($switch | Select-Object -Property Name -ExpandProperty Name)"
             }
-            $VMParam = New-VMParameter -name 'VSIndex' -title "Select Virtual Network Switch (press $([char]0x23CE) to default)" -range @(1, $Count + 1) -rangeIsHidden -AllowNull
+            $VMParam = New-VMParameter -name 'VSIndex' -title "Select Virtual Network Switch (press `"Return`" to default)" -range @(1, $Count + 1) -rangeIsHidden -AllowNull
             $s = Get-VMParam -VMParam $VMParam
             if ($s.length -eq 0) {
                 $Name = 'Default Switch'
@@ -4009,7 +4009,7 @@ function Set-CorrectHyperVSwitchAdapterDialog {
     )
     $Switch = Get-VMSwitch | Where-Object Name -eq $Name
     if (($Name -ne 'Default Switch') ) {
-        $VMParam = New-VMParameter -name 'VMChangeQuery' -title "Set Virtual Network switch to external bridged network mode [Y/N] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+        $VMParam = New-VMParameter -name 'VMChangeQuery' -title "Set Virtual Network switch to external bridged network mode [Y/N] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
         $result = Get-VMParam -VMParam $VMParam
         if ($result -eq $true) {
             Set-CorrectHyperVExternalSwitchAdapter -Name $Name -SuspendOutput
@@ -4135,12 +4135,12 @@ function Get-VMParam {
 
 #========================================================================
 function BoolToYesNo {
-	param([bool]$value)
-	if ($value -eq $true) {
-		return 'Y'
-	} else {
-		return 'N'
-	}
+    param([bool]$value)
+    if ($value -eq $true) {
+        return 'Y'
+    } else {
+        return 'N'
+    }
 }
 #========================================================================
 
@@ -4151,7 +4151,7 @@ function Get-VMParams {
     Get-VMName
     
     Write-Host "Virtual Machine files location: ""$(Get-VMHost | Select-Object VirtualMachinePath -ExpandProperty VirtualMachinePath)\""" -ForegroundColor Yellow
-    $VMParam = New-VMParameter -name 'ChangeVMPath' -title "Change default Virtual Machine files location? [Y/N] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $VMParam = New-VMParameter -name 'ChangeVMPath' -title "Change default Virtual Machine files location? [Y/N] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     if ((Get-VMParam -VMParam $VMParam) -eq $true) {
         $null = Open-VMFolderDialog
     } else {
@@ -4159,59 +4159,59 @@ function Get-VMParams {
     }
 
     Write-Host "VM virtual hard disk location: ""$(Get-VMHost | Select-Object VirtualHardDiskPath -ExpandProperty VirtualHardDiskPath)\""" -ForegroundColor Yellow
-    $VMParam = New-VMParameter -name 'ChangeVHDPath' -title "Change default VM virtual hard disk location? [Y/N] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $VMParam = New-VMParameter -name 'ChangeVHDPath' -title "Change default VM virtual hard disk location? [Y/N] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     if ((Get-VMParam -VMParam $VMParam) -eq $true) {
         $null = Open-VHDFolderDialog
     } else {
         $params.VHDPath = Get-VMHost | Select-Object VirtualHardDiskPath -ExpandProperty VirtualHardDiskPath
     } 
     
-    $VMParam = New-VMParameter -name 'SizeBytes' -title "Specify VM virtual hard disk size [default: $($params.SizeBytes / 1Gb)GB] (press $([char]0x23CE) to default)" -range @(24Gb, 1024Gb) -AllowNull
+    $VMParam = New-VMParameter -name 'SizeBytes' -title "Specify VM virtual hard disk size [default: $($params.SizeBytes / 1Gb)GB] (press `"Return`" to default)" -range @(24Gb, 1024Gb) -AllowNull
     $null = Get-VMParam -VMParam $VMParam
     
-    $VMParam = New-VMParameter -name 'MemoryAmount' -title "Specify amount of RAM dedicated for VM [default: $($params.MemoryAmount / 1Gb)GB] (press $([char]0x23CE) to default)" -range @(2Gb, (Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum).sum) -AllowNull
+    $VMParam = New-VMParameter -name 'MemoryAmount' -title "Specify amount of RAM dedicated for VM [default: $($params.MemoryAmount / 1Gb)GB] (press `"Return`" to default)" -range @(2Gb, (Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum).sum) -AllowNull
     $null = Get-VMParam -VMParam $VMParam
     
-    $VMParam = New-VMParameter -name 'DynamicMemoryEnabled' -title "Enable Dynamic Memory? [Y/N] [default: $(BoolToYesNo $params.DynamicMemoryEnabled)] (press $([char]0x23CE) to enable)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $VMParam = New-VMParameter -name 'DynamicMemoryEnabled' -title "Enable Dynamic Memory? [Y/N] [default: $(BoolToYesNo $params.DynamicMemoryEnabled)] (press `"Return`" to enable)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     $null = Get-VMParam -VMParam $VMParam
     if ($params.DynamicMemoryEnabled -eq $true) {
-        $VMParam = New-VMParameter -name 'MemoryMaximum' -title "Specify maximum amount of dynamic RAM dedicated for VM [default: $(($params.MemoryMaximum / 1Gb))GB] (press $([char]0x23CE) to default)" -range @($params.MemoryAmount, 128Gb) -AllowNull
+        $VMParam = New-VMParameter -name 'MemoryMaximum' -title "Specify maximum amount of dynamic RAM dedicated for VM [default: $(($params.MemoryMaximum / 1Gb))GB] (press `"Return`" to default)" -range @($params.MemoryAmount, 128Gb) -AllowNull
         $null = Get-VMParam -VMParam $VMParam
     }
 
-    $VMParam = New-VMParameter -name 'CPUCores' -title "Specify Number of virtual proccesosrs [default: $($params.CPUCores)] (press $([char]0x23CE) to default)" -range @(1, (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors) -AllowNull
+    $VMParam = New-VMParameter -name 'CPUCores' -title "Specify Number of virtual proccesosrs [default: $($params.CPUCores)] (press `"Return`" to default)" -range @(1, (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors) -AllowNull
     $null = Get-VMParam -VMParam $VMParam
  
     $switch = Get-HyperVSwitchAdapter
     $null = Set-CorrectHyperVSwitchAdapterDialog -Name $switch
     
     $null = Get-VMGpuPartitionAdapterFriendlyName
-    $VMParam = New-VMParameter -name 'GPUDedicatedResourcePercentage' -title "Specify the percentage of dedicated VM GPU resource to pass [default: $($params.GPUDedicatedResourcePercentage)] (press $([char]0x23CE) to default)" -range @(5, 100) -AllowNull
+    $VMParam = New-VMParameter -name 'GPUDedicatedResourcePercentage' -title "Specify the percentage of dedicated VM GPU resource to pass [default: $($params.GPUDedicatedResourcePercentage)] (press `"Return`" to default)" -range @(5, 100) -AllowNull
     $null = Get-VMParam -VMParam $VMParam   
     
     Write-Host "Guest OS Parameters:"  -ForegroundColor Yellow
     $null = Open-ISOImageDialog 
     $null = Get-GuestOSCredentials
     
-    $VMParam = New-VMParameter -name 'Autologon' -title "Enable Autologon to Guest OS? [Y/N] [default: $(BoolToYesNo $params.Autologon)] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $VMParam = New-VMParameter -name 'Autologon' -title "Enable Autologon to Guest OS? [Y/N] [default: $(BoolToYesNo $params.Autologon)] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     $null = Get-VMParam -VMParam $VMParam
  
-    $VMParam = New-VMParameter -name 'CopyRegionalSettings' -title "Copy Host OS regional settings (locale, keyboard layout etc.) to Guest OS? [Y/N] [default: Y] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $VMParam = New-VMParameter -name 'CopyRegionalSettings' -title "Copy Host OS regional settings (locale, keyboard layout etc.) to Guest OS? [Y/N] [default: Y] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     $null = Get-VMParam -VMParam $VMParam
 
-    $VMParam = New-VMParameter -name 'NumLock' -title "Enable NumLock at Logon? [Y/N] [default: $(BoolToYesNo $params.NumLock)] (press $([char]0x23CE) to enable)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+    $VMParam = New-VMParameter -name 'NumLock' -title "Enable NumLock at Logon? [Y/N] [default: $(BoolToYesNo $params.NumLock)] (press `"Return`" to enable)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     $null = Get-VMParam -VMParam $VMParam 
 
     Get-RemoteDesktopApp
     if ($params.Parsec -eq $true) { 
-        $VMParam = New-VMParameter -name 'ParsecVDD' -title "Install Parsec Virtual Display Driver? [Y/N] [default: $(BoolToYesNo $params.ParsecVDD)] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+        $VMParam = New-VMParameter -name 'ParsecVDD' -title "Install Parsec Virtual Display Driver? [Y/N] [default: $(BoolToYesNo $params.ParsecVDD)] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
         $null = Get-VMParam -VMParam $VMParam
-        $VMParam = New-VMParameter -name 'ParsecForTeamsSubscriber' -title "Are you are a Parsec for Teams Subscriber? [Y/N] [default: N] (press $([char]0x23CE) to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+        $VMParam = New-VMParameter -name 'ParsecForTeamsSubscriber' -title "Are you are a Parsec for Teams Subscriber? [Y/N] [default: N] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
         if ((Get-VMParam -VMParam $VMParam) -eq 0) {
-            $VMParam = New-VMParameter -name 'Team_ID' -title "Enter the Parsec for Teams ID (press $([char]0x23CE) to skip)" -AllowNull
+            $VMParam = New-VMParameter -name 'Team_ID' -title "Enter the Parsec for Teams ID (press `"Return`" to skip)" -AllowNull
             $null = Get-VMParam -VMParam $VMParam
             
-            $VMParam = New-VMParameter -name 'Key' -title "Enter the Parsec for Teams Secret Key (press $([char]0x23CE) to skip)" -AllowNull
+            $VMParam = New-VMParameter -name 'Key' -title "Enter the Parsec for Teams Secret Key (press `"Return`" to skip)" -AllowNull
             $null = Get-VMParam -VMParam $VMParam       
         }
     }
@@ -4220,7 +4220,7 @@ function Get-VMParams {
 
 #========================================================================
 function Start-VMandConnect {
-	param([string]$Name)
+    param([string]$Name)
     Start-VM -Name $Name
     Start-Sleep -s 5
     If ((Get-Process VMconnect -ErrorAction SilentlyContinue).Length -eq 0) {
