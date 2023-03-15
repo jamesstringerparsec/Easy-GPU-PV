@@ -42,7 +42,7 @@ To ensure proper functioning of the VM, it's important to update the GPU drivers
 ### Thanks to:  
 - [jamesstringerparsec](https://github.com/jamesstringerparsec/Easy-GPU-PV) for creating EASY-GPU-PV project that was taken as a base as well as main part of this readme
 - [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
-- [gawainXX](https://github.com/gawainXX) for help [jamesstringerparsec] testing and pointing out bugs and feature improvements.  
+- [gawainXX](https://github.com/gawainXX) for help [jamesstringerparsec](https://github.com/jamesstringerparsec/Easy-GPU-PV) testing and pointing out bugs and feature improvements.  
 
 
 ### Notes:    
