@@ -32,6 +32,7 @@ $params = @{
     Parsec = $true
     CopyRegionalSettings = $true
     ParsecVDD = $false
+    DisableHVDD = $false
     NumLock = $true
 }
 #========================================================================
@@ -492,6 +493,7 @@ function New-GPUEnabledVM {
         [bool]$Parsec,
         [bool]$CopyRegionalSettings,
         [bool]$ParsecVDD,
+        [bool]$DisableHVDD,
         [bool]$NumLock
     )
     $VHDPath = ConcatenateVHDPath -VHDPath $VHDPath -VMName $VMName
@@ -514,7 +516,7 @@ function New-GPUEnabledVM {
     $unattendPath = Modify-AutoUnattend -username "$username" -password "$password" -autologon $autologon -hostname $VMName -CopyRegionalSettings $CopyRegionalSettings -xml $unattend
     $MaxAvailableVersion = (Get-VMHostSupportedVersion).Version | Where-Object {$_.Major -lt 254}| Select-Object -Last 1 
     try {
-        Convert-WindowsImage -SourcePath $SourcePath -ISODriveLetter $DriveLetter -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -Parsec:$Parsec -ParsecVDD:$ParsecVDD -RemoteDesktopEnable:$rdp -NumLock:$NumLock -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes | Out-Null
+        Convert-WindowsImage -SourcePath $SourcePath -ISODriveLetter $DriveLetter -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -Parsec:$Parsec -ParsecVDD:$ParsecVDD -DisableHVDD:$DisableHVDD -RemoteDesktopEnable:$rdp -NumLock:$NumLock -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes | Out-Null
     } catch {
     }
     if (Test-Path $vhdPath) {
@@ -558,6 +560,7 @@ function Setup-RemoteDesktop {
     param(
         [Parameter(Mandatory = $true)][bool]$Parsec,
         [bool]$ParsecVDD,
+        [bool]$DisableHVDD,
         [Parameter(Mandatory = $true)][bool]$rdp,
         [bool]$NumLock,
         [Parameter(Mandatory = $true)][string]$DriveLetter,
@@ -578,7 +581,7 @@ function Setup-RemoteDesktop {
     $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
     "[Logon]" >> $path
     "0CmdLine=Install.ps1" >> $path
-    "0Parameters=$rdp $Parsec $ParsecVDD $NumLock $Team_ID $Key" >> $path 
+    "0Parameters=$rdp $Parsec $ParsecVDD $DisableHVDD $NumLock $Team_ID $Key" >> $path 
 
     if ($NumLock -eq $true) {
         $path = "$DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\psscripts.ini"
@@ -710,6 +713,9 @@ function Convert-WindowsImage {
   
     .PARAMETER ParsecVDD
             Install Remote Desktop app Parsec Virtual Display Driver
+    
+    .PARAMETER DisableHVDD
+            Disable Hyper-V Display Driver
 
     .PARAMETER Numlock
             Enable / Disable NumLock at logon
@@ -920,6 +926,10 @@ function Convert-WindowsImage {
         [Parameter(ParameterSetName = "SRC")]
         [bool]
         $ParsecVDD,
+
+        [Parameter(ParameterSetName = "SRC")]
+        [bool]
+        $DisableHVDD,
     
         [Parameter(ParameterSetName = "SRC")]
         [bool]
@@ -2563,7 +2573,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             }
             
             if (($Parsec -eq $true) -or ($RemoteDesktopEnable -eq $true) -or ($NumLock -eq $true)) {
-                Setup-RemoteDesktop -Parsec:$Parsec -ParsecVDD:$ParsecVDD -rdp:$RemoteDesktopEnable -NumLock:$NumLock -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
+                Setup-RemoteDesktop -Parsec:$Parsec -ParsecVDD:$ParsecVDD -DisableHVDD:$DisableHVDD -rdp:$RemoteDesktopEnable -NumLock:$NumLock -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
             }
             
             if ($DiskLayout -eq "UEFI") {
@@ -4205,7 +4215,10 @@ function Get-VMParams {
     Get-RemoteDesktopApp
     if ($params.Parsec -eq $true) { 
         $VMParam = New-VMParameter -name 'ParsecVDD' -title "Install Parsec Virtual Display Driver? [Y/N] [default: $(BoolToYesNo $params.ParsecVDD)] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
-        $null = Get-VMParam -VMParam $VMParam
+        if ((Get-VMParam -VMParam $VMParam) -eq $true) {
+            $VMParam = New-VMParameter -name 'DisableHVDD' -title "Disable Hyper-V Display Driver? [Y/N] [default: $(BoolToYesNo $params.DisableHVDD)] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
+            $null = Get-VMParam -VMParam $VMParam
+        }
         $VMParam = New-VMParameter -name 'ParsecForTeamsSubscriber' -title "Are you are a Parsec for Teams Subscriber? [Y/N] [default: N] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
         if ((Get-VMParam -VMParam $VMParam) -eq 0) {
             $VMParam = New-VMParameter -name 'Team_ID' -title "Enter the Parsec for Teams ID (press `"Return`" to skip)" -AllowNull
