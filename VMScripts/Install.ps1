@@ -75,7 +75,7 @@ function Install-ParsecVDD {
             Start-Sleep -s 5
         }
         if ($DisableHVDD -eq $true) {
-            Get-PnpDevice | Where-Object {$_.friendlyname -like "Microsoft Hyper-V Video" -and $_.status -eq "OK"} | Disable-PnpDevice -confirm:$false
+            Get-PnpDevice | Where-Object {($_.Instanceid | Select-String -Pattern "VMBUS") -and $_.Class -like "Display" -and $_.status -eq "OK"} | Disable-PnpDevice -confirm:$false
         }
         Start-Process "C:\Users\$env:USERNAME\Downloads\Parsec-vdd.exe" -ArgumentList "/s"
     } 
