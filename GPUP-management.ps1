@@ -1,4 +1,4 @@
-﻿#========================================================================
+#========================================================================
 $Global:VM
 $Global:VHD
 $Global:ServerOS
@@ -330,15 +330,28 @@ function Set-W2VItemProperty {
         [string[]]$Exclude, 
         [pscredential]$Credential, 
         [string]$Type,
+		[string]$PropertyType,
         [object]$CommonParameters
     )
     if ((Test-Path $path) -eq $false) {
         New-Item $path -Force
     }   
-    try {
+	if ((Get-ItemProperty -path $path -name $Name -ErrorAction SilentlyContinue).Count -eq 0) {
+		if ($PSBoundParameters.Type.Length -ne 0) {
+			if ($PSBoundParameters.PropertyType.Length -eq 0) {
+				$PSBoundParameters.PropertyType = $PSBoundParameters.Type
+			}
+			$PSBoundParameters.Remove('Type')
+		}
+		$null = New-ItemProperty @PSBoundParameters
+	} else {
+		if ($PSBoundParameters.PropertyType.Length -ne 0) {
+			if ($PSBoundParameters.Type.Length -eq 0) {
+				$PSBoundParameters.Type = $PSBoundParameters.PropertyType
+			}
+			$PSBoundParameters.Remove('PropertyType')
+		}
         $null = Set-ItemProperty @PSBoundParameters
-    } catch {
-        $null = New-ItemProperty @PSBoundParameters
     }
 }   
 #========================================================================
@@ -506,15 +519,15 @@ function New-GPUEnabledVM {
     }
     if (Test-Path $vhdPath) {
         New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -Path $VMPath -VHDPath $VhdPath -Generation 2 -SwitchName $NetworkSwitch -Version $MaxAvailableVersion | Out-Null
+		Set-VMMemory -VMName $VMName -DynamicMemoryEnabled:$DynamicMemoryEnabled
         Set-VM -Name $VMName -ProcessorCount $CPUCores 
         Set-VM -Name $VMName -CheckpointType Disabled 
         Set-VM -Name $VMName -MemoryMinimum $MemoryAmount
         Set-VM -Name $VMName -MemoryMaximum $MemoryMaximum
         Set-VM -Name $VMName -LowMemoryMappedIoSpace 3GB 
         Set-VM -Name $VMName -HighMemoryMappedIoSpace 32GB
-        Set-VM -Name $VMName -GuestControlledCacheTypes $true 
+        Set-VM -Name $VMName -GuestControlledCacheTypes:$true 
         Set-VM -Name $VMName -AutomaticStopAction ShutDown
-        Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $DynamicMemoryEnabled
         $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | Foreach-Object Manufacturer
         $BuildVer = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
         if (($BuildVer.CurrentBuild -lt 22000) -and ($CPUManufacturer -eq "AuthenticAMD")) {
@@ -3842,12 +3855,9 @@ function Get-RemoteDesktopApp {
 #========================================================================
 function Set-ServerOSGroupPolicies {
     param()
-    $path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV"
-    if ((Test-Path $path) -eq $false) {
-        New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows" -Name "HyperV"
-    }
-    $null = New-ItemProperty -Path $path -Name "RequireSecureDeviceAssignment" -Value 0 -PropertyType "DWORD"
-    $null = New-ItemProperty -Path $path -Name "RequireSupportedDeviceAssignment" -Value 0 -PropertyType "DWORD"
+	$path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV"  
+    Set-W2VItemProperty -Path $path -Name "RequireSecureDeviceAssignment" -Value 0 -PropertyType "DWORD"
+    Set-W2VItemProperty -Path $path -Name "RequireSupportedDeviceAssignment" -Value 0 -PropertyType "DWORD"
 }
 #========================================================================
 
