@@ -316,6 +316,25 @@ function Write-W2VInfo {
 #========================================================================
 
 #========================================================================
+function Write-W2VInProgress {
+    # Function to make the Write-Host output a bit prettier.
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]
+        [ValidateNotNullOrEmpty()]$Object,
+        [Object]$Separator,
+        [ConsoleColor]$ForegroundColor,
+        [ConsoleColor]$BackgroundColor
+    )
+    if ($Global:W2VInProgressCounter++ -eq 10) { $Global:W2VInProgressCounter = 0 }
+    $PSBoundParameters.NoNewLine = $true
+    $PSBoundParameters.Object = "$($Object) $(`".`" * $Global:W2VInProgressCounter)" 
+    Write-Host @PSBoundParameters
+}
+#========================================================================
+
+#========================================================================
 function Set-W2VItemProperty {
     [CmdletBinding()]
     param (
@@ -3569,6 +3588,18 @@ function Get-VMAvailable {
 
 #========================================================================
 function Get-VMGpuPartitionAdapterFriendlyName {
+    param([string]$VMName)
+    $PassingThroguhRequired = $false
+    if ($VMName.Length -ne 0) {
+        try {
+            $DeviceID = (Get-VMGpuPartitionAdapter -VMName $VMName | %{$_.InstancePath.split('#')})[1]           
+            $params.GPUName = (Get-WmiObject Win32_PNPSignedDriver | where {($_.HardwareID -eq "PCI\$($DeviceID)")}).DeviceName    
+            return $PassingThroguhRequired
+        } catch {
+            Write-Warning "There is no a GPU passed through to $($VMName). The action was changed to 2nd"
+            $PassingThroguhRequired = $true            
+        }
+    }
     $Devices = (Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2").name
     $GPUs = New-Object System.Collections.Generic.List[System.Object]
     Write-Host "Printing a list of compatible GPUs... It may take a while..." -ForegroundColor Yellow
@@ -3596,6 +3627,7 @@ function Get-VMGpuPartitionAdapterFriendlyName {
         }
     }
     $params.GPUName = $GPUs[[decimal]($s)]
+    return $PassingThroguhRequired
 }
 #========================================================================
 
@@ -3625,13 +3657,13 @@ function Get-VMObjects {
     $Global:StateWasRunning = $Global:VM.state -eq "Running"
     
     if ($Global:VM.state -ne "Off") {
-        Write-Host "`r`nAttemping to shutdown VM..."
-        Stop-VM -Name $Global:VM.Name -Force
+        Write-Host "Attemping to shutdown VM"
+        Stop-VM -Name $Global:VM.Name -Force -ErrorAction SilentlyContinue
+        While ($VM.State -ne "Off") {
+            Write-W2VInProgress "Waiting for VM to shutdown - make sure there are no unsaved documents"
+            Start-Sleep -s 1
+        }
     } 
-    While ($VM.State -ne "Off") {
-        Start-Sleep -s 3
-        Write-Host "`r`nWaiting for VM to shutdown - make sure there are no unsaved documents..."
-    }
 }
 #========================================================================
 
@@ -3777,16 +3809,15 @@ function Get-Action {
     Write-Host "`r`nAvailable actions:" -ForegroundColor Yellow
     Write-Host "1: Create new VM with GPU acceleration"
     Write-Host "2: Pass through GPU acceleration to HyperV VM (GPU drivers are copied automatically)"
-    Write-Host "3: Copy GPU Drivers from Host to VM"
-    Write-Host "4: Upgrade VMs GPU Drivers"
-    Write-Host "5: Remove GPU acceleration from HyperV VM"
-    Write-Host "6: Change dedicated resources percentage of passed through GPU"
-    Write-Host "7: Exit"
-    $m = "`r`nSelect an action from 1 to 7"
+    Write-Host "3: Upgrade VMs GPU Drivers"
+    Write-Host "4: Remove GPU acceleration from HyperV VM"
+    Write-Host "5: Change dedicated resources percentage of passed through GPU"
+    Write-Host "6: Exit"
+    $m = "Select an action from 1 to 6"
     while ($true) {
         try {
             $s = Read-Host -Prompt $m
-            if (([decimal]($s) -ge 1) -and ([decimal]($s) -le 7) -and ($s.length -ne 0)) {
+            if (([decimal]($s) -ge 1) -and ([decimal]($s) -le 6) -and ($s.length -ne 0)) {
                 break
             }
         } catch {
@@ -3794,27 +3825,14 @@ function Get-Action {
         }
     }
     switch ($s) {
-        1 {}
+        1 { break }
         3 { if (!(Get-VMAvailable)) { exit } break }
         4 { if (!(Get-VMAvailable)) { exit } break }
-        5 { if (!(Get-VMAvailable)) { exit } break }
-        7 { exit } 
+        6 { exit } 
         default {
             if (!(Get-VMAvailable)) { exit }
-            $m = "Enter dedicated resources percentage of passing through GPU (from 1 to 100)"
-            $p = Read-Host -Prompt $m
-            while ($true) {
-                try {
-                    if ((1 -gt [decimal]($p)) -or ([decimal]($p) -gt 100)) {
-                        $p = Read-Host -Prompt $m
-                    } else {
-                        break
-                    }
-                } catch {
-                    $p = -1     
-                }
-            }
-            $params.GPUDedicatedResourcePercentage = [decimal]($p)
+            $VMParam = New-VMParameter -name 'GPUDedicatedResourcePercentage' -title "Specify the percentage of dedicated VM GPU resource to pass [default: $($params.GPUDedicatedResourcePercentage)] (press `"Return`" to default)" -range @(5, 100) -AllowNull
+            $null = Get-VMParam -VMParam $VMParam  
         } 
     }
     return $s
@@ -4263,14 +4281,15 @@ If ((Is-Administrator) -and (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) 
             Pass-VMGPUPartitionAdapter 
             Copy-GPUDrivers }
         3 { Get-VMObjects
-            Get-VMGpuPartitionAdapterFriendlyName
+            if ((Get-VMGpuPartitionAdapterFriendlyName -VMName $Global:VM.Name) -eq $true) {
+                $VMParam = New-VMParameter -name 'GPUDedicatedResourcePercentage' -title "Specify the percentage of dedicated VM GPU resource to pass [default: $($params.GPUDedicatedResourcePercentage)] (press `"Return`" to default)" -range @(5, 100) -AllowNull
+                $null = Get-VMParam -VMParam $VMParam  
+                Pass-VMGPUPartitionAdapter 
+            }
             Copy-GPUDrivers }
         4 { Get-VMObjects
-            Get-VMGpuPartitionAdapterFriendlyName
-            Copy-GPUDrivers }
-        5 { Get-VMObjects
             Delete-VMGPUPartitionAdapter }
-        6 { Get-VMObjects
+        5 { Get-VMObjects
             Pass-VMGPUPartitionAdapter -OnlyResources }
     }
     
