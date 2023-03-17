@@ -3596,8 +3596,13 @@ function Get-VMGpuPartitionAdapterFriendlyName {
             $params.GPUName = (Get-WmiObject Win32_PNPSignedDriver | where {($_.HardwareID -eq "PCI\$($DeviceID)")}).DeviceName    
             return $PassingThroguhRequired
         } catch {
-            Write-Warning "There is no a GPU passed through to $($VMName). The action was changed to 2nd"
-            $PassingThroguhRequired = $true            
+            Write-Warning "There is no a GPU passed through to $($VMName)."
+            $VMParam = New-VMParameter -name 'Null' -title "Pass through GPU to VM and copy host drivers? [Y/N]" -AllowedValues @{Y = $true; N = $false}
+            if ((Get-VMParam -VMParam $VMParam) -eq $true) {
+                $PassingThroguhRequired = $true
+            } else {
+                SmartExit
+            }
         }
     }
     $Devices = (Get-WmiObject -Class "Msvm_PartitionableGpu" -ComputerName $env:COMPUTERNAME -Namespace "ROOT\virtualization\v2").name
@@ -3813,7 +3818,7 @@ function Get-Action {
     Write-Host "4: Remove GPU acceleration from HyperV VM"
     Write-Host "5: Change dedicated resources percentage of passed through GPU"
     Write-Host "6: Exit"
-    $m = "Select an action from 1 to 6"
+    $m = "`r`nSelect an action from 1 to 6"
     while ($true) {
         try {
             $s = Read-Host -Prompt $m
