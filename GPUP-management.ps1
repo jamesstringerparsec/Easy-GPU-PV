@@ -4183,7 +4183,7 @@ function Get-VMParams {
 
     Get-VMName
     
-    Write-Host "Virtual Machine files location: ""$(Get-VMHost | Select-Object VirtualMachinePath -ExpandProperty VirtualMachinePath)\""" -ForegroundColor Yellow
+    Write-Host "Virtual Machine files location: ""$(Get-VMHost | Select-Object VirtualMachinePath -ExpandProperty VirtualMachinePath)""" -ForegroundColor Yellow
     $VMParam = New-VMParameter -name 'ChangeVMPath' -title "Change default Virtual Machine files location? [Y/N] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     if ((Get-VMParam -VMParam $VMParam) -eq $true) {
         $null = Open-VMFolderDialog
@@ -4191,7 +4191,7 @@ function Get-VMParams {
         $params.VMPath = Get-VMHost | Select-Object VirtualMachinePath -ExpandProperty VirtualMachinePath
     }
 
-    Write-Host "VM virtual hard disk location: ""$(Get-VMHost | Select-Object VirtualHardDiskPath -ExpandProperty VirtualHardDiskPath)\""" -ForegroundColor Yellow
+    Write-Host "VM virtual hard disk location: ""$(Get-VMHost | Select-Object VirtualHardDiskPath -ExpandProperty VirtualHardDiskPath)""" -ForegroundColor Yellow
     $VMParam = New-VMParameter -name 'ChangeVHDPath' -title "Change default VM virtual hard disk location? [Y/N] (press `"Return`" to skip)" -AllowedValues @{Y = $true; N = $false} -AllowNull
     if ((Get-VMParam -VMParam $VMParam) -eq $true) {
         $null = Open-VHDFolderDialog
