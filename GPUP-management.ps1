@@ -522,7 +522,7 @@ function New-GPUEnabledVM {
     $Report = Get-ISOWindowsEditions -DriveLetter $DriveLetter
     $LastReportNum = $Report.Count
     $params.Edition = $LastReportNum
-    $VMParam = New-VMParameter -name 'CPUCores' -title "Select Index of the Windows Edition [default: $LastReportNum] (press `"Return`" to skip)" -range @(1, $LastReportNum) -AllowNull $true
+    $VMParam = New-VMParameter -name 'Edition' -title "Select Index of the Windows Edition [default: $LastReportNum] (press `"Return`" to skip)" -range @(1, $LastReportNum) -AllowNull $true
     $null = Get-VMParam -VMParam $VMParam
     
     if ($(Get-VM -Name $VMName -ErrorAction SilentlyContinue) -ne $NULL) {
