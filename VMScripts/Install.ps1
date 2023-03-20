@@ -1,4 +1,4 @@
-﻿#========================================================================
+#========================================================================
 param(
     $rdp,
     $Parsec,
@@ -15,6 +15,104 @@ if ($NumLock -eq $true) {
     $WshShell = New-Object -ComObject WScript.Shell
     if ([console]::NumberLock -eq $false) {
         $WshShell.SendKeys("{NUMLOCK}")
+    }
+}
+#========================================================================
+
+#========================================================================
+function Set-RegistryPolicyItem {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]
+        [ValidateNotNullOrEmpty()]$path,
+        [Parameter(Mandatory = $true)]
+        [string]
+        [ValidateNotNullOrEmpty()]$name,
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]$value,
+        [int]$type,
+        [switch]$Force
+    )
+
+    $RegPolPath = "$env:SystemRoot\System32\GroupPolicy\Machine\Registry.pol"
+    
+    if ($type -eq 0) {
+        $type = switch ($value.GetType().Fullname) {
+            'System.String' { 1  }
+            'System.Int32'  { 4  }
+            'System.Int64'  { 11 }
+            default { return }
+        }
+    }
+    
+    function PolToUpperCase {
+        param(
+            [int[]]$data
+        ) 
+        return $data | % -begin {$nameSection=$false} -process {
+            if ($_ -eq 91)    { $nameSection = $true } 
+            elseif($_ -eq 65) { $nameSection = $false }
+            elseif($_ -ge 97 -and $_ -le 122 -and  $nameSection) { $_ -= 32 }
+            $_
+        }
+    }
+    
+    function LastIndexOfBytesPattern {
+        param (
+            [int[]]$data,
+            [int[]]$pattern
+        )
+        $i, $j = 0, 0
+        ForEach ($byte in $data) {
+            if($byte -eq $pattern[$j++]) { 
+                if($j -eq $pattern.Count) { return $i } 
+            } else {
+                $j = 0
+            } 
+            $i++
+        } 
+        return -1
+    }
+    
+    if (Test-path -path $RegPolPath) {
+        $rawData = [io.file]::ReadAllBytes($RegPolPath)
+    } else {
+        $rawData = @(80, 82, 101, 103, 1, 0, 0, 0)
+    }
+    
+    $isUptoDate = $true
+    $keyData    = [System.Text.Encoding]::Unicode.GetBytes($path)
+    $NameData   = [System.Text.Encoding]::Unicode.GetBytes($name)
+    
+    switch ($true) {        
+        ($type -eq 4 -or $type -eq 11) { $valueData  = [BitConverter]::GetBytes($value) }
+        $default { $valueData  = [System.Text.Encoding]::Unicode.GetBytes($value) }
+    }
+    
+    $pattern    = @(91, 0) + $keyData +  @(0, 0, 59, 0) + $NameData + @(0, 0, 59, 0)
+    $PolicyTypeOffset = (LastIndexOfBytesPattern (PolToUpperCase $rawData) (PolToUpperCase $pattern)) + 1
+    
+    if ($PolicyTypeOffset -gt 0) {
+        $ValueOffset = 12 + $PolicyTypeOffset
+        if ($rawData[$PolicyTypeOffset] -ne $type) {
+            return
+        }
+        for ($i = 0; $i -lt $valueData.Count; $i++) {
+            if ($rawData[$i + $ValueOffset] -ne $valueData[$i]) { 
+                $isUptoDate = $false 
+            }
+            $rawData[$i + $ValueOffset] = $valueData[$i]
+        }
+    } else {
+        $isUptoDate = $false
+        $rawData += $pattern + @($type, 0, 0, 0, 59, 0, $type, 0, 0, 0, 59, 0) + $valueData + @(93, 0)
+    }
+    
+    if ($isUptoDate -eq $false) {
+        [io.file]::WriteAllBytes($RegPolPath, $rawData)
+        if ($Force -eq $true) { 
+            Start-Process -FilePath "gpupdate" -ArgumentList "/force" -NoNewWindow -Wait 
+        }
     }
 }
 #========================================================================
@@ -38,6 +136,13 @@ function Set-AllowInBoundConnections {
     if ((Get-NetFirewallProfile -Profile Public).DefaultInboundAction -ne 'Allow') {
         Set-NetFirewallProfile -Profile Public -DefaultInboundAction 'Allow'
     }
+    Set-RegistryPolicyItem -Path "SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -Name "DisableNotifications" -Value 1
+    Set-RegistryPolicyItem -Path "SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -Name "DisableEnhancedNotifications" -Value 1
+    Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "ColorDepth" -Value 4
+    Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "bEnumerateHWBeforeSW" -Value 1
+    Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "fEnableVirtualizedGraphics" -Value 1
+    Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "AVC444ModePreferred" -Value 1
+    Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "fEnableWddmDriver" -Value 0 -Force
 }
 #========================================================================
 
