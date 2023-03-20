@@ -2522,6 +2522,8 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     Write-W2VInfo "Enabling Remote Desktop"
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSystem)\ControlSet001\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSystem)\ControlSet001\Control\Terminal Server\WinStations\RDP-Tcp"  -Name "UserAuthentication" -Value 0
+<<<<<<< HEAD
+=======
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSoftware)\Policies\Microsoft\Windows NT\Terminal Services" -Name "fEnableVirtualizedGraphics" -Value 1
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSoftware)\Policies\Microsoft\Windows NT\Terminal Services" -Name "ColorDepth" -Value 4
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSoftware)\Policies\Microsoft\Windows NT\Terminal Services" -Name "bEnumerateHWBeforeSW" -Value 1
@@ -2529,6 +2531,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSoftware)\Policies\Microsoft\Windows NT\Terminal Services" -Name "AVCHardwareEncodePreferred" -Value 1
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSoftware)\Policies\Microsoft\Windows NT\Terminal Services" -Name "fEnableVirtualizedGraphics" -Value 1
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSoftware)\Policies\Microsoft\Windows NT\Terminal Services\Client" -Name "EnableHardwareMode" -Value 1
+>>>>>>> d2a07a4d4d63be0938cb4e5fd26064b5cc607171
                 }
                 if (-not $ExpandOnNativeBoot) {
                     Write-W2VInfo "Disabling automatic $VHDFormat expansion for Native Boot"
