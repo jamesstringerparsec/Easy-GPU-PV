@@ -11,11 +11,38 @@ param(
 #========================================================================
 
 #========================================================================
+function Remove-File {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if (Test-Path $Path) { Remove-Item $Path -Force }
+}
+#========================================================================
+
+#========================================================================
+Remove-File "C:\unattend.xml"
+Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
+Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\Logon\Install.ps1"
+
 if ($NumLock -eq $true) {
     $WshShell = New-Object -ComObject WScript.Shell
-    if ([console]::NumberLock -eq $false) {
-        $WshShell.SendKeys("{NUMLOCK}")
+    for ($i=0; $i -lt 5; $i++) {
+        Start-Sleep -s 0.1
+        if ([console]::NumberLock -eq $false) {
+            $WshShell.SendKeys("{NUMLOCK}")
+        } else { break }
     }
+    $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
+    "[Logon]"                                          >> $path
+    "0CmdLine=NumLockEnable.ps1"                       >> $path
+    "0Parameters="                                     >> $path
+    
+    $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon\NumLockEnable.ps1"
+    "`$WshShell = New-Object -ComObject WScript.Shell" >> $path
+    "for (`$i=0; `$i -lt 5; `$i++) {"                  >> $path
+    "    Start-Sleep -s 0.1"                           >> $path
+    "    if ([console]::NumberLock -eq `$false) {"     >> $path
+    "        `$WshShell.SendKeys(`"{NUMLOCK}`")"       >> $path
+    "    } else { break }"                             >> $path
+    "}"                                                >> $path
 }
 #========================================================================
 
@@ -118,13 +145,6 @@ function Set-RegistryPolicyItem {
 #========================================================================
 
 #========================================================================
-function Remove-File {
-    param([Parameter(Mandatory = $true)][string]$Path)
-    if (Test-Path $Path) { Remove-Item $Path -Force }
-}
-#========================================================================
-
-#========================================================================
 function Set-AllowInBoundConnections {
     param()
     if ((Get-NetFirewallProfile -Profile Domain).DefaultInboundAction -ne 'Allow') {
@@ -138,6 +158,7 @@ function Set-AllowInBoundConnections {
     }
     Set-RegistryPolicyItem -Path "SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -Name "DisableNotifications" -Value 1
     Set-RegistryPolicyItem -Path "SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -Name "DisableEnhancedNotifications" -Value 1
+    Set-RegistryPolicyItem -Path "SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Firewall and network protection" -Name "UILockdown" -Value 1
     Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "ColorDepth" -Value 4
     Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "bEnumerateHWBeforeSW" -Value 1
     Set-RegistryPolicyItem -Path "Software\Policies\Microsoft\Windows NT\Terminal Services" -Name "fEnableVirtualizedGraphics" -Value 1
@@ -206,15 +227,11 @@ function Set-EasyGPUPScheduledTask {
 #========================================================================
 
 #========================================================================
-while(!(Test-NetConnection Google.com).PingSucceeded){
+while(!(Test-NetConnection Google.com).PingSucceeded) {
     Start-Sleep -Seconds 1
 }
 
 Get-ChildItem -Path C:\ProgramData\Easy-GPU-P -Recurse | Unblock-File
-
-if ($rdp -eq $true) {
-    Set-AllowInBoundConnections
-}
 
 if ($Parsec -eq $true) {
     if ((Test-Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Parsec) -eq $false) {
@@ -242,22 +259,7 @@ if ($Parsec -eq $true) {
     }
 }
 
-Remove-File "C:\unattend.xml"
-Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
-Remove-File "C:\Windows\system32\GroupPolicy\User\Scripts\Logon\Install.ps1"
-#========================================================================
-
-#========================================================================
-if ($NumLock -eq $true) {
-    $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
-    "[Logon]" >> $path
-    "0CmdLine=NumLockEnable.ps1" >> $path
-    "0Parameters=" >> $path
-    
-    $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Startup\NumLockEnable.ps1"
-    "`$WshShell = New-Object -ComObject WScript.Shell" >> $path
-    "if ([console]::NumberLock -eq `$false) {" >> $path
-    "    `$WshShell.SendKeys(""{NUMLOCK}"")" >> $path
-    "}" >> $path
+if ($rdp -eq $true) {
+    Set-AllowInBoundConnections
 }
 #========================================================================
