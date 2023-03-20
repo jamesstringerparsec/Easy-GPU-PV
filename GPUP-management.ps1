@@ -588,27 +588,30 @@ function Setup-RemoteDesktop {
     New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory -Force | Out-Null
     
     $path = "$DriveLetter\Windows\system32\GroupPolicy\User\Scripts\psscripts.ini"
-    "[Logon]" >> $path
-    "0CmdLine=Install.ps1" >> $path
+    "[Logon]"                                                                 >> $path
+    "0CmdLine=Install.ps1"                                                    >> $path
     "0Parameters=$RDP $Parsec $ParsecVDD $DisableHVDD $NumLock $Team_ID $Key" >> $path 
 
     if ($NumLock -eq $true) {
         $path = "$DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\psscripts.ini"
-        "[Startup]" >> $path
-        "0CmdLine=NumLockEnable.ps1" >> $path
-        "0Parameters=" >> $path
+        "[Startup]"                                                           >> $path
+        "0CmdLine=NumLockEnable.ps1"                                          >> $path
+        "0Parameters="                                                        >> $path
         
         $path = "$DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup\NumLockEnable.ps1"
-        "`$WshShell = New-Object -ComObject WScript.Shell" >> $path
-        "if ([console]::NumberLock -eq `$false) {" >> $path
-        "    `$WshShell.SendKeys(""{NUMLOCK}"")" >> $path
-        "}" >> $path
+        "`$WshShell = New-Object -ComObject WScript.Shell"                    >> $path
+        "for (`$i=0; `$i -lt 5; `$i++) {"                                     >> $path
+        "    Start-Sleep -s 0.1"                                              >> $path
+        "    if ([console]::NumberLock -eq `$false) {"                        >> $path
+        "        `$WshShell.SendKeys(`"{NUMLOCK}`")"                          >> $path
+        "    } else { break }"                                                >> $path
+        "}"                                                                   >> $path
     }
 
     $path = "$DriveLetter\Windows\system32\GroupPolicy\gpt.ini"
-    "[General]" >> $path
-    "gPCUserExtensionNames=[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B66650-4972-11D1-A7CA-0000F87571E3}]" >> $path
-    "Version=131074" >> $path
+    "[General]"                                                                                               >> $path
+    "gPCUserExtensionNames=[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B66650-4972-11D1-A7CA-0000F87571E3}]"    >> $path
+    "Version=131074"                                                                                          >> $path
     "gPCMachineExtensionNames=[{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}]" >> $path
     
     Copy-Item -Path $psscriptroot\VMScripts\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
@@ -2516,8 +2519,6 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
             if ($RDP -or (-not $ExpandOnNativeBoot)) {
                 $hiveSystem   = Mount-RegistryHive -Hive (Join-Path $windowsDrive "Windows\System32\Config\System")
-                $hiveSoftware = Mount-RegistryHive -Hive (Join-Path $windowsDrive "Windows\System32\Config\Software")
-                $hiveDefault  = Mount-RegistryHive -Hive (Join-Path $windowsDrive "Windows\System32\Config\Default")
                 if ($RDP) {
                     Write-W2VInfo "Enabling Remote Desktop"
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSystem)\ControlSet001\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
@@ -2527,12 +2528,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     Write-W2VInfo "Disabling automatic $VHDFormat expansion for Native Boot"
                     Set-W2VItemProperty -Path "HKLM:\$($hiveSystem)\ControlSet001\Services\FsDepends\Parameters" -Name "VirtualDiskExpandOnMount" -Value 4
                 }
-                if ($NumLock -eq $true) {
-                    Set-W2VItemProperty -Path "HKLM:\$($hiveDefault)\Control Panel\Keyboard" -Name "InitialKeyboardIndicators" -Value 80000002
-                }
                 Dismount-RegistryHive -HiveMountPoint $hiveSystem
-                Dismount-RegistryHive -HiveMountPoint $hiveSoftware
-                Dismount-RegistryHive -HiveMountPoint $hiveDefault
             }
 
             if ($Driver) {
