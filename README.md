@@ -1,7 +1,7 @@
 # Interactive-Easy-GPU-PV 
 A work-in-progress fork of [jamesstringerparse Easy-GPU-PV repository](https://github.com/jamesstringerparsec/Easy-GPU-PV). The goal of the project is to simplify the entire process as much as possible. The main script is interactive, so users don't have to define any parameters in advance. Instead, parameters can be chosen while the script is running, making the process much easier.
 
-![Administrator_ Windows PowerShell 2023-03-14 21-18-30](https://user-images.githubusercontent.com/77991615/225123630-151be5d3-83fc-4d05-b1b2-019ff80adb33.gif)
+![Administrator_-PowerShell-2023-03-21-16-38-00](https://user-images.githubusercontent.com/77991615/226651194-032db39b-291a-4cd4-a231-da5a215c9eee.gif)
 
 ***The following text is primarily taken from the original Easy-GPU-PV project. I've made some modifications and improvements to ensure that it accurately reflects the current state of the project and provides relevant information.***
 
