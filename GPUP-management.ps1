@@ -3638,7 +3638,7 @@ function Get-VMObjects {
     if ($Global:VM.state -ne "Off") {
         Write-Host "Attemping to shutdown VM"
         Stop-VM -Name $Global:VM.Name -Force -ErrorAction SilentlyContinue
-        While ($VM.State -ne "Off") {
+        While ((Get-VM $Global:VM.Name).State -ne "Off") {
             Write-W2VInProgress "Waiting for VM to shutdown - make sure there are no unsaved documents"
             Start-Sleep -s 1
         }
