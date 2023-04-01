@@ -27,7 +27,7 @@ $params = @{
     Key = ""
     Username = ""
     Password = ""
-    Autologon = $false
+    Autologon = $true
     RDP = $true
     Parsec = $true
     CopyRegionalSettings = $true
@@ -248,52 +248,29 @@ $params = @{
 
 #========================================================================
 $ParsecLnk = (
-    76, 0, 0, 0, 1, 20, 2, 0, 0, 0, 0, 0, 192, 0, 0, 0, 0, 0, 0, 70, 219, 64, 8, 0, 32, 0, 0, 0, 0, 36, 210, 154, 63, 198, 213, 1, 42, 9, 123, 54, 220, 199, 213, 1, 0, 36, 210, 
-    154, 63, 198, 213, 1, 72, 12, 6, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 113, 1, 20, 0, 31, 80, 224, 79, 208, 32, 234, 58, 105, 16, 162, 216, 8, 0, 
-    43, 48, 48, 157, 25, 0, 47, 67, 58, 92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 140, 0, 49, 0, 0, 0, 0, 0, 45, 80, 20, 189, 17, 0, 80, 82, 79, 71, 82, 65, 
-    126, 49, 0, 0, 116, 0, 9, 0, 4, 0, 239, 190, 115, 78, 150, 38, 45, 80, 20, 189, 46, 0, 0, 0, 179, 30, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 74, 0, 0, 0, 0, 0, 4, 233,
-    16, 0, 80, 0, 114, 0, 111, 0, 103, 0, 114, 0, 97, 0, 109, 0, 32, 0, 70, 0, 105, 0, 108, 0, 101, 0, 115, 0, 0, 0, 64, 0, 115, 0, 104, 0, 101, 0, 108, 0, 108, 0, 51, 0, 50, 
-    0, 46, 0, 100, 0, 108, 0, 108, 0, 44, 0, 45, 0, 50, 0, 49, 0, 55, 0, 56, 0, 49, 0, 0, 0, 24, 0, 84, 0, 49, 0, 0, 0, 0, 0, 46, 80, 87, 144, 16, 0, 80, 97, 114, 115, 101, 99,
-    0, 0, 62, 0, 9, 0, 4, 0, 239, 190, 42, 80, 78, 140, 46, 80, 87, 144, 46, 0, 0, 0, 77, 179, 13, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 193, 86, 87, 0, 80, 
-    0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 0, 0, 22, 0, 98, 0, 50, 0, 72, 12, 6, 0, 40, 80, 156, 130, 32, 0, 112, 97, 114, 115, 101, 99, 100, 46, 101, 120, 101, 0, 72, 0, 9, 
-    0, 4, 0, 239, 190, 40, 80, 156, 130, 42, 80, 79, 140, 46, 0, 0, 0, 172, 161, 1, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 112, 0, 97, 0, 114, 0, 
-    115, 0, 101, 0, 99, 0, 100, 0, 46, 0, 101, 0, 120, 0, 101, 0, 0, 0, 26, 0, 0, 0, 84, 0, 0, 0, 28, 0, 0, 0, 1, 0, 0, 0, 28, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 19,
-    0, 0, 0, 3, 0, 0, 0, 32, 219, 249, 164, 16, 0, 0, 0, 79, 83, 0, 67, 58, 92, 80, 114, 111, 103, 114, 97, 109, 32, 70, 105, 108, 101, 115, 92, 80, 97, 114, 115, 101, 99, 92, 
-    112, 97, 114, 115, 101, 99, 100, 46, 101, 120, 101, 0, 0, 50, 0, 46, 0, 46, 0, 92, 0, 46, 0, 46, 0, 92, 0, 46, 0, 46, 0, 92, 0, 46, 0, 46, 0, 92, 0, 46, 0, 46, 0, 92, 0, 46,
-    0, 46, 0, 92, 0, 80, 0, 114, 0, 111, 0, 103, 0, 114, 0, 97, 0, 109, 0, 32, 0, 70, 0, 105, 0, 108, 0, 101, 0, 115, 0, 92, 0, 80, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 92,
-    0, 112, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 100, 0, 46, 0, 101, 0, 120, 0, 101, 0, 24, 0, 67, 0, 58, 0, 92, 0, 80, 0, 114, 0, 111, 0, 103, 0, 114, 0, 97, 0, 109, 0, 32, 
-    0, 70, 0, 105, 0, 108, 0, 101, 0, 115, 0, 92, 0, 80, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 92, 0, 35, 0, 67, 0, 58, 0, 92, 0, 80, 0, 114, 0, 111, 0, 103, 0, 114, 0, 97, 0, 
-    109, 0, 32, 0, 70, 0, 105, 0, 108, 0, 101, 0, 115, 0, 92, 0, 80, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 92, 0, 112, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 100, 0, 46, 0,
-    101, 0, 120, 0, 101, 0, 36, 2, 0, 0, 9, 0, 0, 160, 145, 0, 0, 0, 49, 83, 80, 83, 237, 48, 189, 218, 67, 0, 137, 71, 167, 248, 208, 19, 164, 115, 102, 34, 117, 0, 0, 0, 100, 
-    0, 0, 0, 0, 31, 0, 0, 0, 49, 0, 0, 0, 101, 0, 108, 0, 101, 0, 99, 0, 116, 0, 114, 0, 111, 0, 110, 0, 32, 0, 40, 0, 67, 0, 58, 0, 92, 0, 85, 0, 115, 0, 101, 0, 114, 0, 115, 
-    0, 92, 0, 74, 0, 97, 0, 109, 0, 101, 0, 115, 0, 92, 0, 65, 0, 112, 0, 112, 0, 68, 0, 97, 0, 116, 0, 97, 0, 92, 0, 82, 0, 111, 0, 97, 0, 109, 0, 105, 0, 110, 0, 103, 0, 92, 0, 
-    80, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 173, 0, 0, 0, 49, 83, 80, 83, 48, 241, 37, 183, 239, 71, 26, 16, 165, 241, 2, 96, 140, 158, 235,
-    172, 41, 0, 0, 0, 10, 0, 0, 0, 0, 31, 0, 0, 0, 11, 0, 0, 0, 112, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 46, 0, 101, 0, 120, 0, 101, 0, 0, 0, 0, 0, 21, 0, 0, 0, 15, 0, 0, 0,
-    0, 64, 0, 0, 0, 0, 50, 198, 129, 215, 191, 211, 1, 21, 0, 0, 0, 12, 0, 0, 0, 0, 21, 0, 0, 0, 0, 222, 206, 4, 0, 0, 0, 0, 41, 0, 0, 0, 4, 0, 0, 0, 0, 31, 0, 0, 0, 12, 0, 0, 0, 
-    65, 0, 112, 0, 112, 0, 108, 0, 105, 0, 99, 0, 97, 0, 116, 0, 105, 0, 111, 0, 110, 0, 0, 0, 21, 0, 0, 0, 14, 0, 0, 0, 0, 64, 0, 0, 0, 0, 50, 198, 129, 215, 191, 211, 1, 0, 0, 
-    0, 0, 161, 0, 0, 0, 49, 83, 80, 83, 166, 106, 99, 40, 61, 149, 210, 17, 181, 214, 0, 192, 79, 217, 24, 208, 133, 0, 0, 0, 30, 0, 0, 0, 0, 31, 0, 0, 0, 58, 0, 0, 0, 67, 0, 58, 
-    0, 92, 0, 85, 0, 115, 0, 101, 0, 114, 0, 115, 0, 92, 0, 74, 0, 97, 0, 109, 0, 101, 0, 115, 0, 92, 0, 65, 0, 112, 0, 112, 0, 68, 0, 97, 0, 116, 0, 97, 0, 92, 0, 82, 0, 111, 0,
-    97, 0, 109, 0, 105, 0, 110, 0, 103, 0, 92, 0, 80, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 92, 0, 101, 0, 108, 0, 101, 0, 99, 0, 116, 0, 114, 0, 111, 0, 110, 0, 92, 0, 112, 
-    0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 46, 0, 101, 0, 120, 0, 101, 0, 0, 0, 0, 0, 0, 0, 57, 0, 0, 0, 49, 83, 80, 83, 177, 22, 109, 68, 173, 141, 112, 72, 167, 72, 64, 46, 
-    164, 61, 120, 140, 29, 0, 0, 0, 104, 0, 0, 0, 0, 72, 0, 0, 0, 81, 177, 96, 115, 82, 246, 99, 73, 181, 157, 8, 48, 36, 153, 12, 1, 0, 0, 0, 0, 0, 0, 0, 0, 20, 3, 0, 0, 7, 0, 
-    0, 160, 37, 80, 114, 111, 103, 114, 97, 109, 70, 105, 108, 101, 115, 37, 92, 80, 97, 114, 115, 101, 99, 92, 112, 97, 114, 115, 101, 99, 100, 46, 101, 120, 101, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 37, 0, 80, 0, 114, 0, 111, 0, 
-    103, 0, 114, 0, 97, 0, 109, 0, 70, 0, 105, 0, 108, 0, 101, 0, 115, 0, 37, 0, 92, 0, 80, 0, 97, 0, 114, 0, 115, 0, 101, 0, 99, 0, 92, 0, 112, 0, 97, 0, 114, 0, 115, 0, 101, 0, 
-    99, 0, 100, 0, 46, 0, 101, 0, 120, 0, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 16, 0, 0, 0, 5, 0, 0, 160, 38, 0, 0, 0, 185, 0, 0, 0, 28, 0, 0, 0, 11, 0, 0, 160, 182, 99, 94, 144, 191, 193, 78, 73, 178, 156, 101, 183, 50, 211, 210, 26, 185, 
-    0, 0, 0, 96, 0, 0, 0, 3, 0, 0, 160, 88, 0, 0, 0, 0, 0, 0, 0, 120, 112, 115, 45, 49, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 248, 0, 98, 213, 14, 9, 15, 74, 140, 92, 196, 116, 224, 
-    127, 81, 95, 19, 35, 169, 199, 11, 51, 234, 17, 185, 33, 156, 182, 208, 197, 75, 148, 248, 0, 98, 213, 14, 9, 15, 74, 140, 92, 196, 116, 224, 127, 81, 95, 19, 35, 169, 199, 
-    11, 51, 234, 17, 185, 33, 156, 182, 208, 197, 75, 148, 0, 0, 0, 0
+     31, 139,   8,   0,   0,   0,   0,   0,   0,  10, 237,  85,  95,  72,  83,  97,  20,  63, 179,  85,  46,  77,  39,  91,  98,  86, 186, 210, 201, 178, 156, 155, 210, 191, 129,  
+     53,  81, 116,  90, 185, 235, 102, 217, 195, 165, 156, 219,  77,  23,  51, 215, 238, 130,  65,  80,  20, 244,  16,  44,  48, 168, 160, 208, 208, 176,  36, 208,   7,  19,  21,  
+     31,  76, 133, 210, 183,  24, 138, 253,  51, 194, 215, 140,  16,  95, 194, 222,  58, 231, 219, 157, 179, 165, 152, 208, 147, 244,  93, 206, 249, 190, 123, 254, 254, 190, 243, 
+    125, 231, 222,  83,   0,  32,  83, 199,  33,   7,  24, 101,  28, 202, 102, 204, 241, 160, 161,  85, 246, 228, 227,  19, 227, 211, 178,  92, 197, 181, 195, 159,  39, 166, 101, 
+    145, 119,  75, 226,  22, 102,  40,  11, 219,  47, 141,  43,  50,  53, 100, 114, 179, 214, 144, 102, 206, 228,  86,  62, 253,  16,  15,   7,  12, 134, 182, 157, 144,  95,  98, 
+    226,  99,  76, 105,   4, 193, 200, 230,  60,  78,  61, 156,   2, 156, 205,  90, 110,  43, 190, 142,  34,  63,  40,  64,  14, 243, 175, 196, 170, 135,  57, 164, 211, 163,  77, 
+     95, 134, 252, 183, 132, 149, 140, 203, 191,  42, 129,   3,  31,  52,  67,   3, 114,   7,  52,  33, 236,  50, 112, 131,   7,   4,  16,  81, 111,  70, 222, 136, 107,  15,  62, 
+    133,  80,   0, 122, 112, 177, 245,  65, 200, 195,  55,  35,  28, 129, 163,  12,  67,  26, 212,  72,  88, 244,  92, 109,  11, 198, 116, 248,  68, 193,   9, 112,  92,  66, 146, 
+    203,  85,   5,  73,  67,  72,  78, 247, 109,  71,  30,  46,  88, 116, 140, 157, 173,  69,  36,  14,  68,  33,  98,  62, 116, 133,  84, 168, 199,  28,  84,  42,  29, 215, 122, 
+     75,   3,  94,  22, 211, 165,  23,   2,   2,  88, 164, 184, 164, 201, 229, 172,  65, 138, 219, 221,  65, 187, 219, 181,  66, 157, 188, 203, 226, 186, 112,  15,   2,   4, 144, 
+      0, 210, 145, 106, 144, 118,  75, 149, 161,  57,  95, 242, 177,  35, 169, 144,  54,  33, 105, 102, 126, 118,  42, 113, 182, 218,   1,  15, 130, 243,  53,  55, 248,  28,  77, 
+    154,  50, 183,  71,  16, 249, 240,  78, 249, 229, 224,  88, 157, 244, 192, 175, 193,  87, 175,  59, 233, 162, 136, 249,  85, 240, 167,  65,   9, 152, 214,  21,  39, 107, 221,  
+     30,  43, 103, 206, 198, 195,  83,   0, 180, 223, 195, 154,  24, 237, 156, 253, 187,  97, 248,  83,   9, 220,  41, 239,  90,  12, 169,  58, 197, 139, 251, 174, 162, 220,  69,  
+     69, 204,  36,   3,  36, 186,  64,  20, 194, 207,  18,  95, 198, 148,  58,   9, 202,  25,  22, 156,  82, 240, 120,  37,   9,  78,  24,  70,  49, 166, 246,  66,  41,  74, 252,  
+     72,  60, 216, 208, 143, 180, 110, 244, 110, 136, 129, 185, 127, 233, 160, 123,  36,  64, 134,   5, 237, 224, 124, 121, 186, 242, 217,  66,  92,  93, 240, 201, 183, 110, 178, 
+    216,  22,   1, 148,  16, 115,  35, 162, 247,   1,  96,   7,  82,  50,  45, 204, 196,  10, 198, 111, 190,  31, 153, 146, 145,  48,  49, 162, 133,  47, 111, 169, 145,  88,  82, 
+    121,  36,  36, 105, 195, 136,  61, 136, 208, 201,  80, 187, 217,  78, 195,  78,  73, 177,  33, 105, 217,  33, 129, 125, 126, 201, 169,  43, 122,  48, 153, 210, 255,  14,  70, 
+    173,  31, 211,  66, 183,  81, 158,  17, 137, 108,  66, 250, 119, 149, 226, 255,  56,   9, 126, 213,  82,   0,  28, 147,   0, 246, 166,  54, 149, 246, 220, 245,  90, 186,  44, 
+    102, 125, 103,  81,  32, 184,   7, 229, 141, 100,  96,  65, 170, 238, 173,  19, 109,  63, 156,  21, 253, 109, 241, 134, 236,  71, 137,  75,  31,  24,  53,  54, 206,  86, 188,  
+     35,  90, 169,  93,  88, 183, 104,  87, 108, 151,  13,  63, 180,  49,  29,  23, 237,  55, 237,  95, 118, 220, 255, 177,  17,   6, 253,  67,  54,  99,  79, 228, 224,  60, 132,  
+     68, 255,  27, 252,  26, 181,  15,  56, 207, 183, 140, 140,  85,  85, 188, 108,  21,   6,  11, 166,  38, 211,  73,  87, 135, 132,  45, 212, 126,  78, 242,  13, 120, 197,  60, 
+    227, 161, 104, 172,  69, 168, 159,  78,  82,  36,  87,   6, 249, 215, 254, 217,  27, 213,  23,  84,  89,  47,  38,  18,  10, 231,  82, 134, 246, 182,  14, 132, 222, 156, 188, 
+    191, 150, 158,  98, 252,   2, 171,  79, 220, 238, 187,   8,   0,   0
 )
 #========================================================================
 
@@ -392,8 +369,11 @@ function Get-ISOWindowsEditions {
     param (
         [string]$DriveLetter
     )
-    Write-Host "Printing Windows editions on the selected disk image... It may take a while..." -ForegroundColor Yellow
     $WinImages = Get-windowsimage -ImagePath "$($DriveLetter):\sources\install.wim"
+    if ($WinImages.Count -eq 0) {
+        return $null
+    }
+    Write-Host "Printing Windows editions on the selected disk image... It may take a while..." -ForegroundColor Yellow
     $Report = @()
     Write-Host "Index  Edition"
     Write-Host "=====  =======" 
@@ -529,29 +509,28 @@ function New-GPUEnabledVM {
     $MaxAvailableVersion = (Get-VMHostSupportedVersion).Version | Where-Object {$_.Major -lt 254} | Select-Object -Last 1 
     Convert-WindowsImage -SourcePath $SourcePath -ISODriveLetter $DriveLetter -Edition $Edition -VHDFormat $Vhdformat -VHDPath $VhdPath -DiskLayout $DiskLayout -UnattendPath $UnattendPath -Parsec:$Parsec -ParsecVDD:$ParsecVDD -DisableHVDD:$DisableHVDD -RDP:$RDP -NumLock:$NumLock -GPUName $GPUName -Team_ID $Team_ID -Key $Key -SizeBytes $SizeBytes | Out-Null
     if (Test-Path $vhdPath) {
-        New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -Path $VMPath -VHDPath $VhdPath -Generation 2 -SwitchName $NetworkSwitch -Version $MaxAvailableVersion | Out-Null
-        Set-VMMemory -VMName $VMName -DynamicMemoryEnabled:$DynamicMemoryEnabled
-        Set-VM -Name $VMName -ProcessorCount $CPUCores 
-        Set-VM -Name $VMName -CheckpointType Disabled 
-        Set-VM -Name $VMName -MemoryMinimum $MemoryAmount
-        Set-VM -Name $VMName -MemoryMaximum $MemoryMaximum
-        Set-VM -Name $VMName -LowMemoryMappedIoSpace 3GB 
-        Set-VM -Name $VMName -HighMemoryMappedIoSpace 32GB
-        Set-VM -Name $VMName -GuestControlledCacheTypes:$true 
-        Set-VM -Name $VMName -AutomaticStopAction ShutDown
+        $Global:VM = New-VM -Name $VMName -MemoryStartupBytes $MemoryAmount -Path $VMPath -VHDPath $VhdPath -Generation 2 -SwitchName $NetworkSwitch -Version $MaxAvailableVersion
+        $Global:VM | Set-VMMemory -DynamicMemoryEnabled:$DynamicMemoryEnabled
+        $Global:VM | Set-VM -ProcessorCount $CPUCores 
+        $Global:VM | Set-VM -CheckpointType Disabled 
+        $Global:VM | Set-VM -MemoryMinimum $MemoryAmount
+        $Global:VM | Set-VM -MemoryMaximum $MemoryMaximum
+        $Global:VM | Set-VM -LowMemoryMappedIoSpace 3GB 
+        $Global:VM | Set-VM -HighMemoryMappedIoSpace 32GB
+        $Global:VM | Set-VM -GuestControlledCacheTypes:$true 
+        $Global:VM | Set-VM -AutomaticStopAction ShutDown
         $CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | Foreach-Object Manufacturer
         $BuildVer = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
         if (($BuildVer.CurrentBuild -lt 22000) -and ($CPUManufacturer -eq "AuthenticAMD")) {
         } else {
-            Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
+            $Global:VM | Set-VMProcessor -ExposeVirtualizationExtensions $true
         }
         Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
-        Set-VMVideo -VMName $VMName -HorizontalResolution 1920 -VerticalResolution 1080
-        Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
-        Enable-VMTPM -VMName $VMName 
-        Add-VMDvdDrive -VMName $VMName -Path $SourcePath 
-        $Global:VM  = Get-VM -VMName $VMName
-        $Global:VHD = Get-VHD -VMId $VM.VMId
+        $Global:VM | Set-VMVideo -HorizontalResolution 1920 -VerticalResolution 1080
+        $Global:VM | Set-VMKeyProtector -NewLocalKeyProtector
+        $Global:VM | Enable-VMTPM
+        $Global:VM | Add-VMDvdDrive -Path $SourcePath 
+        $Global:VHD = $Global:VM | Get-VMHardDiskDrive
         Pass-VMGPUPartitionAdapter
         Write-W2VInfo "Starting and connecting to VM"
         if ($Global:ServerOS -eq $true) {
@@ -619,7 +598,18 @@ function Setup-RemoteDesktop {
     if ($Parsec -eq $true) {         
         Copy-Item -Path $psscriptroot\VMScripts\VDDMonitor.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
         Copy-Item -Path $psscriptroot\misc\ParsecPublic.cer -Destination $DriveLetter\ProgramData\Easy-GPU-P
-        [io.file]::WriteAllBytes("$DriveLetter\ProgramData\Easy-GPU-P\Parsec.lnk", $ParsecLnk)
+        $compressedDataStream = New-Object System.IO.MemoryStream
+        $compressedDataStream.Write($parsecLnk, 0, $parsecLnk.Length)
+        $compressedDataStream.Position = 0
+        $decompressGzipStream = New-Object System.IO.Compression.GZipStream($compressedDataStream, [System.IO.Compression.CompressionMode]::Decompress)
+        $decompressedStream = New-Object System.IO.MemoryStream
+        $buffer = New-Object byte[](1024)
+        while (($read = $decompressGzipStream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+            $decompressedStream.Write($buffer, 0, $read)
+        }
+        $decompressGzipStream.Close()
+        $decompressedData = $decompressedStream.ToArray()
+        [io.file]::WriteAllBytes("$DriveLetter\ProgramData\Easy-GPU-P\Parsec.lnk", $decompressedData)
     }
 }
 #========================================================================
@@ -3562,15 +3552,15 @@ function Get-VMAvailable {
 
 #========================================================================
 function Get-VMGpuPartitionAdapterFriendlyName {
-    param([string]$VMName)
+    param([switch]$GetPassedGPU)
     $PassingThroguhRequired = $false
-    if ($VMName.Length -ne 0) {
+    if ($GetPassedGPU -eq $true) {
         try {
-            $DeviceID = (Get-VMGpuPartitionAdapter -VMName $VMName | %{$_.InstancePath.split('#')})[1]           
+            $DeviceID = (Get-VMGpuPartitionAdapter -VM $Global:VM | %{$_.InstancePath.split('#')})[1]           
             $params.GPUName = (Get-WmiObject Win32_PNPSignedDriver | where {($_.HardwareID -eq "PCI\$($DeviceID)")}).DeviceName    
             return $PassingThroguhRequired
         } catch {
-            Write-Warning "There is no a GPU passed through to $($VMName)."
+            Write-Warning "There is no a GPU passed through to $($Global:VM.Name)."
             $VMParam = New-VMParameter -name 'Null' -title "Pass through GPU to VM and copy host drivers? [Y/N]" -AllowedValues @{Y = $true; N = $false}
             if ((Get-VMParam -VMParam $VMParam) -eq $true) {
                 $PassingThroguhRequired = $true
@@ -3617,7 +3607,7 @@ function Get-VMObjects {
     Write-Host "Printing a list of VMs..." -ForegroundColor Yellow
     Foreach ($VM in Get-VM) {
         Write-Host "$([string](++$i)): $($VM.Name)"
-        $VMs.Add($VM.Name) 
+        $VMs.Add($VM) 
     }
     $m = "Select VM ID from 1 to $($i)"
     while ($true) {
@@ -3631,8 +3621,8 @@ function Get-VMObjects {
         }
     }
     
-    $Global:VM  = Get-VM -VMName $VMs[[decimal]($s)-1]
-    $Global:VHD = Get-VHD -VMId $Global:VM.VMId
+    $Global:VM  = $VMs[[decimal]($s)-1]
+    $Global:VHD = $Global:VM | Get-VMHardDiskDrive
     $Global:StateWasRunning = $Global:VM.state -eq "Running"
 	
     if ($Global:VM.state -ne "Off") {
@@ -3642,6 +3632,7 @@ function Get-VMObjects {
             Write-W2VInProgress "Waiting for VM to shutdown - make sure there are no unsaved documents"
             Start-Sleep -s 1
         }
+        Stop-VM -Name $Global:VM.Name -TurnOff -Force -ErrorAction SilentlyContinue
     } 
 }
 #========================================================================
@@ -3734,9 +3725,8 @@ function Copy-GPUDrivers {
 function Delete-VMGPUPartitionAdapter {
     param()
     $VMName  = $Global:VM.Name
-    $GPUP = Get-VMGPUPartitionAdapter -VMName $VMName
-    If ($GPUP.length -ne 0) {
-        Remove-VMGpuPartitionAdapter -VMName $VMName
+    foreach($Adapter in $Global:VM | Get-VMGPUPartitionAdapter) {
+        Remove-VMGpuPartitionAdapter -VM $Global:VM
     }
 }
 #========================================================================
@@ -3754,27 +3744,27 @@ function Pass-VMGPUPartitionAdapter {
     if ($OnlyResources -ne $true) {
         if ($GPUName -eq "AUTO") {
             $DevicePathName = $PartitionableGPUList.Name[0]
-            Add-VMGpuPartitionAdapter -VMName $VMName
+            $Global:VM | Add-VMGpuPartitionAdapter
         } else {
             $DeviceID = ((Get-WmiObject Win32_PNPSignedDriver | where {($_.Devicename -eq "$GPUNAME")}).hardwareid).split('\')[1]
             $DevicePathName = ($PartitionableGPUList | Where-Object name -like "*$deviceid*").Name
-            Add-VMGpuPartitionAdapter -VMName $VMName -InstancePath $DevicePathName
+            $Global:VM | Add-VMGpuPartitionAdapter -InstancePath $DevicePathName
         }
     }
     [float]$div = [math]::round($(100 / $DedicatedPercentage), 2)
-    Set-VMGpuPartitionAdapter -VMName $VMName -MinPartitionVRAM        ([math]::round($(1000000000 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -MaxPartitionVRAM        ([math]::round($(1000000000 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -OptimalPartitionVRAM    ([math]::round($(1000000000 / $div)))
-    Set-VMGPUPartitionAdapter -VMName $VMName -MinPartitionEncode      ([math]::round($(18446744073709551615 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -MaxPartitionEncode      ([math]::round($(18446744073709551615 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -OptimalPartitionEncode  ([math]::round($(18446744073709551615 / $div)))
-    Set-VMGpuPartitionAdapter -VMName $VMName -MinPartitionDecode      ([math]::round($(1000000000 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -MaxPartitionDecode      ([math]::round($(1000000000 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -OptimalPartitionDecode  ([math]::round($(1000000000 / $div)))
-    Set-VMGpuPartitionAdapter -VMName $VMName -MinPartitionCompute     ([math]::round($(1000000000 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -MaxPartitionCompute     ([math]::round($(1000000000 / $div))) 
-    Set-VMGpuPartitionAdapter -VMName $VMName -OptimalPartitionCompute ([math]::round($(1000000000 / $div)))
-    Set-VM -GuestControlledCacheTypes:$true -VMName $VMName
+    $Global:VM | Set-VMGpuPartitionAdapter -MinPartitionVRAM        ([math]::round($(1000000000 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -MaxPartitionVRAM        ([math]::round($(1000000000 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -OptimalPartitionVRAM    ([math]::round($(1000000000 / $div)))
+    $Global:VM | Set-VMGPUPartitionAdapter -MinPartitionEncode      ([math]::round($(18446744073709551615 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -MaxPartitionEncode      ([math]::round($(18446744073709551615 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -OptimalPartitionEncode  ([math]::round($(18446744073709551615 / $div)))
+    $Global:VM | Set-VMGpuPartitionAdapter -MinPartitionDecode      ([math]::round($(1000000000 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -MaxPartitionDecode      ([math]::round($(1000000000 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -OptimalPartitionDecode  ([math]::round($(1000000000 / $div)))
+    $Global:VM | Set-VMGpuPartitionAdapter -MinPartitionCompute     ([math]::round($(1000000000 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -MaxPartitionCompute     ([math]::round($(1000000000 / $div))) 
+    $Global:VM | Set-VMGpuPartitionAdapter -OptimalPartitionCompute ([math]::round($(1000000000 / $div)))
+    $Global:VM | Set-VM -GuestControlledCacheTypes:$true
 }
 #========================================================================
 
@@ -4199,8 +4189,12 @@ function Get-VMParams {
  	$params.DriveLetter = Mount-ISOReliable -SourcePath $params.SourcePath 
 
     $Editions = Get-ISOWindowsEditions -DriveLetter $params.DriveLetter
-    $VMParam = New-VMParameter -name 'Edition' -title "Select Index of the Windows Edition [default: $($Editions.Count)] (press `"Return`" to skip)" -range @(1, $Editions.Count) -AllowNull $true
-    $null = Get-VMParam -VMParam $VMParam
+    if ($null -ne $Editions) {
+        $VMParam = New-VMParameter -name 'Edition' -title "Select Index of the Windows Edition [default: $($Editions.Count)] (press `"Return`" to skip)" -range @(1, $Editions.Count) -AllowNull $true
+        $null = Get-VMParam -VMParam $VMParam
+    } else {
+        $param.Edition = 0
+    }
 	
     $null = Get-GuestOSCredentials
     
@@ -4265,7 +4259,7 @@ If ((Is-Administrator) -and (Get-WindowsCompatibleOS) -and (Get-HyperVEnabled)) 
             Pass-VMGPUPartitionAdapter 
             Copy-GPUDrivers }
         3 { Get-VMObjects
-            if ((Get-VMGpuPartitionAdapterFriendlyName -VMName $Global:VM.Name) -eq $true) {
+            if ((Get-VMGpuPartitionAdapterFriendlyName -GetPassedGPU) -eq $true) {
                 Get-GPUDedicatedResourcePercentage
                 Pass-VMGPUPartitionAdapter 
             }
