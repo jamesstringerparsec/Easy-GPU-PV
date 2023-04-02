@@ -4367,10 +4367,14 @@ Check-Params @params
 
 New-GPUEnabledVM @params
 
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV"
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV" -Name "RequireSecureDeviceAssignment" -Type DWORD -Value 0 -Force
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV" -Name "RequireSupportedDeviceAssignment" -Type DWORD -Value 0 -Force
+
 Start-VM -Name $params.VMName
 
 SmartExit -ExitReason "If all went well the Virtual Machine will have started, 
 In a few minutes it will load the Windows desktop, 
 when it does, sign into Parsec (a fast remote desktop app)
 and connect to the machine using Parsec from another computer. 
-Have fun!
+Have fun!"
