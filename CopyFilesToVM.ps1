@@ -1999,38 +1999,8 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             ####################################################################################################
 
             Write-W2VInfo "Looking for the requested Windows image in the WIM file"
-            $WindowsImage = Get-WindowsImage -ImagePath "$($driveLetter):\sources\install.wim"
-
-            if (-not $WindowsImage -or ($WindowsImage -is [System.Array]))
-            {
-                #
-                # WIM may have multiple images.  Filter on Edition (can be index or name) and try to find a unique image
-                #
-                $EditionIndex = 0;
-                if ([Int32]::TryParse($Edition, [ref]$EditionIndex))
-                {
-                    $WindowsImage = Get-WindowsImage -ImagePath $SourcePath -Index $EditionIndex
-                }
-                else
-                {
-                    $WindowsImage = Get-WindowsImage -ImagePath $SourcePath | Where-Object {$_.ImageName -ilike "*$($Edition)"}
-                }
-
-                if (-not $WindowsImage)
-                {
-                    throw "Requested windows Image was not found on the WIM file!"
-                }
-                if ($WindowsImage -is [System.Array])
-                {
-                    Write-W2VInfo "WIM file has the following $($WindowsImage.Count) images that match filter *$($Edition)"
-                    Get-WindowsImage -ImagePath $SourcePath
-
-                    Write-W2VError "You must specify an Edition or SKU index, since the WIM has more than one image."
-                    throw "There are more than one images that match ImageName filter *$($Edition)"
-                }
-            }
-
-            $ImageIndex = $WindowsImage[0].ImageIndex
+            $WindowsImage = Get-WindowsImage -ImagePath "$($driveLetter):\sources\install.wim" | Format-Table | Out-Host -Paging
+            $ImageIndex = Read-Host "Please enter ImageIndex"
 
             # We're good.  Open the WIM container.
             # NOTE: this is only required because we want to get the XML-based meta-data at the end.  Is there a better way?
@@ -4397,11 +4367,14 @@ Check-Params @params
 
 New-GPUEnabledVM @params
 
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV"
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV" -Name "RequireSecureDeviceAssignment" -Type DWORD -Value 0 -Force
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\HyperV" -Name "RequireSupportedDeviceAssignment" -Type DWORD -Value 0 -Force
+
 Start-VM -Name $params.VMName
 
 SmartExit -ExitReason "If all went well the Virtual Machine will have started, 
 In a few minutes it will load the Windows desktop, 
 when it does, sign into Parsec (a fast remote desktop app)
 and connect to the machine using Parsec from another computer. 
-Have fun!
-Sign up to Parsec at https://parsec.app"
+Have fun!"

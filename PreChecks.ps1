@@ -15,11 +15,11 @@ Function Get-DesktopPC
 
 Function Get-WindowsCompatibleOS {
 $build = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
-if ($build.CurrentBuild -ge 19041 -and ($($build.editionid -like 'Professional*') -or $($build.editionid -like 'Enterprise*') -or $($build.editionid -like 'Education*'))) {
+if ($($build.editionid -like 'ServerDatacenter*') -or $($build.editionid -like 'ServerStandard*') -or $($build.editionid -like 'Professional*') -or $($build.editionid -like 'Enterprise*') -or $($build.editionid -like 'Education*')) {
     Return $true
     }
 Else {
-    Write-Warning "Only Windows 10 20H1 or Windows 11 (Pro or Enterprise) is supported"
+    Write-Warning "Only Windows 10 20H1, Windows 11 (Pro or Enterprise) and Windows Server is supported"
     Return $false
     }
 }
@@ -30,7 +30,7 @@ if (Get-WindowsOptionalFeature -Online | Where-Object FeatureName -Like 'Microso
     Return $true
     }
 Else {
-    Write-Warning "You need to enable Virtualisation in your motherboard and then add the Hyper-V Windows Feature and reboot"
+    Write-Warning "You need to enable Virtualisation in your motherboard and then add the Hyper-V Windows Feature and reboot`nYou can run the following command:`nEnable-WindowsOptionalFeature -Online -FeatureName `"Microsoft-Hyper-V-All`""
     Return $false
     }
 }
