@@ -73,3 +73,4 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 - If you do not have administrator permissions on the machine it means you set the username and vmname to the same thing, these needs to be different.  
 - AMD Polaris GPUS like the RX 580 do not support hardware video encoding via GPU Paravirtualization at this time.  
 - To download Windows ISOs with Rufus, it must have "Check for updates" enabled.
+- CopyFilesToVM script gives an error if Windows display language is in Turkish. Change it to English, restart the computer and run the script again.
