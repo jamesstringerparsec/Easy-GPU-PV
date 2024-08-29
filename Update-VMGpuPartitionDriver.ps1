@@ -11,10 +11,10 @@ Param (
 #>
 
 Param (
-[string]$VMName,
-[string]$GPUName,
-[string]$BitLockerKey,
-[string]$Hostname = $ENV:Computername
+    [string]$VMName,
+    [string]$GPUName,
+    [string]$BitLockerKey,
+    [string]$Hostname = $ENV:Computername
 )
 
 $ErrorActionPreference = "Stop"
@@ -28,7 +28,7 @@ If ($VM.state -eq "Running") {
     [bool]$state_was_running = $True
 }
 
-if ($VM.state -ne "Off"){
+if ($VM.state -ne "Off") {
     "Attemping to shutdown VM..."
     Stop-VM -Name $VMName -Force
 } 
@@ -40,15 +40,17 @@ While ($VM.State -ne "Off") {
 
 if ($VHD.Attached -eq $False) {
     "Mounting Drive..."
-    $DriveLetter = (Mount-VHD -Path $VHD.Path -PassThru | Get-Disk | Get-Partition | Get-Volume | Where-Object {$_.DriveLetter} | ForEach-Object DriveLetter)
-} else {
-    $DriveLetter = ($VHD | Get-Disk | Get-Partition | Get-Volume | Where-Object {$_.DriveLetter} | ForEach-Object DriveLetter)
+    $DriveLetter = (Mount-VHD -Path $VHD.Path -PassThru | Get-Disk | Get-Partition | Get-Volume | Where-Object { $_.DriveLetter } | ForEach-Object DriveLetter)
+}
+else {
+    $DriveLetter = ($VHD | Get-Disk | Get-Partition | Get-Volume | Where-Object { $_.DriveLetter } | ForEach-Object DriveLetter)
+    "Using already mounted drive ${DriveLetter}:"
 }
 
 $BitLockerStatus = Get-BitLockerVolume $DriveLetter
-if($BitLockerStatus.LockStatus) {
-    if([string]::IsNullOrWhiteSpace($BitLockerKey)){
-        $BitLockerKey = Read-Host "Enter BitLockerKey for drive $DriveLetter"
+if ($BitLockerStatus.LockStatus) {
+    if ([string]::IsNullOrWhiteSpace($BitLockerKey)) {
+        $BitLockerKey = Read-Host "Enter BitLocker Key for drive ${DriveLetter}:"
     }
     Unlock-BitLocker -MountPoint $DriveLetter -RecoveryPassword $BitLockerKey
 }
