@@ -5,6 +5,7 @@ Remember: GPU Name must match the name of the GPU you assigned when creating the
 Param (
 [string]$VMName = "NameofyourVM",
 [string]$GPUName = "NameofyourGPU",
+[string]$BitLockerKey = "XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX",
 [string]$Hostname = $ENV:Computername
 )
 
