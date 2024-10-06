@@ -454,7 +454,7 @@ function Convert-WindowsImage {
         [string]
         [ValidateNotNullOrEmpty()]
         [ValidateSet("None", "Serial", "1394", "USB", "Local", "Network")]
-        $EnableDebugger = "Serial",
+        $EnableDebugger = "None",
 
         [Parameter(ParameterSetName="SRC")]
         [string[]]
@@ -4378,9 +4378,6 @@ param(
         Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
         Set-VMVideo -VMName $VMName -HorizontalResolution 1920 -VerticalResolution 1080
         Set-VMKeyProtector -VMName $VMName -NewLocalKeyProtector
-        if ($EnableDebugger -inotlike "None") {
-            Set-VMFirmware -VMName $VMName -DisableSecureBoot
-        }
         Enable-VMTPM -VMName $VMName 
         Add-VMDvdDrive -VMName $VMName -Path $SourcePath
         Assign-VMGPUPartitionAdapter -GPUName $GPUName -VMName $VMName -GPUResourceAllocationPercentage $GPUResourceAllocationPercentage
