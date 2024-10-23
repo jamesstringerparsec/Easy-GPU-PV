@@ -32,6 +32,7 @@ If ($VM.state -eq "Running") {
 if ($VM.state -ne "Off") {
     "Attemping to shutdown VM..."
     Stop-VM -Name $VMName -Force
+    $VHD = Get-VHD -VMId $VM.VMId
 } 
 
 While ($VM.State -ne "Off") {
