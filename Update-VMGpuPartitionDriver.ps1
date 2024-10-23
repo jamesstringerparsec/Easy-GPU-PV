@@ -46,13 +46,13 @@ if ($VHD.Attached -eq $False) {
 }
 else {
     $DriveLetter = ($VHD | Get-Disk | Get-Partition | Get-Volume | Where-Object { $_.DriveLetter } | ForEach-Object DriveLetter)
-    "Using already mounted drive ${DriveLetter}:"
+    "Using already mounted drive ${DriveLetter}"
 }
 
 $BitLockerStatus = Get-BitLockerVolume $DriveLetter
 if ($BitLockerStatus.LockStatus) {
     if ([string]::IsNullOrWhiteSpace($BitLockerKey)) {
-        $BitLockerKey = Read-Host "Enter BitLocker Key for drive ${DriveLetter}:"
+        $BitLockerKey = Read-Host "Enter BitLocker Key for drive ${DriveLetter}"
     }
     Unlock-BitLocker -MountPoint $DriveLetter -RecoveryPassword $BitLockerKey
 }
