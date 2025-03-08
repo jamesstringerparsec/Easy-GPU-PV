@@ -1,4 +1,4 @@
-﻿$params = @{
+$params = @{
     VMName = "GPUPV"
     SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"
     Edition    = 6
@@ -2123,51 +2123,85 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     if ((Get-WindowsBuildNumber) -ge 10240)
                     {
                         #
-                        # Create the system partition.  Create a data partition so we can format it, then change to ESP
+                        # Create EFI System Partition (ESP)
                         #
-                        Write-W2VInfo "Creating EFI system partition..."
-                        $systemPartition = New-Partition -DiskNumber $disk.Number -Size 200MB -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}'
+                        Write-W2VInfo "Creating temporary data partition for ESP..."
+                        $systemPartition = New-Partition `
+                            -DiskNumber $disk.Number `
+                            -Size 200MB `
+                            -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}' `
+                            -AssignDriveLetter  # Critical for formatting
 
-                        Write-W2VInfo "Formatting system volume..."
-                        $systemVolume = Format-Volume -Partition $systemPartition -FileSystem FAT32 -Force -Confirm:$false
+                        # Refresh partition object to get drive letter
+                        $systemPartition = $systemPartition | Get-Partition
 
-                        Write-W2VInfo "Setting system partition as ESP..."
+                        Write-W2VInfo "Formatting ESP as FAT32..."
+                        Format-Volume `
+                            -DriveLetter $systemPartition.DriveLetter `
+                            -FileSystem FAT32 `
+                            -NewFileSystemLabel "SYSTEM" `
+                            -Force `
+                            -Confirm:$false
+
+                        Write-W2VInfo "Converting partition to ESP..."
                         $systemPartition | Set-Partition -GptType '{c12a7328-f81f-11d2-ba4b-00a0c93ec93b}'
-                        $systemPartition | Add-PartitionAccessPath -AssignDriveLetter
                     }
                     else
                     {
                         #
-                        # Create the system partition
+                        # Legacy ESP creation for older Windows builds
                         #
                         Write-W2VInfo "Creating EFI system partition (ESP)..."
-                        $systemPartition = New-Partition -DiskNumber $disk.Number -Size 200MB -GptType '{c12a7328-f81f-11d2-ba4b-00a0c93ec93b}' -AssignDriveLetter
+                        $systemPartition = New-Partition `
+                            -DiskNumber $disk.Number `
+                            -Size 200MB `
+                            -GptType '{c12a7328-f81f-11d2-ba4b-00a0c93ec93b}' `
+                            -AssignDriveLetter
 
                         Write-W2VInfo "Formatting ESP..."
                         $formatArgs = @(
-                            "$($systemPartition.DriveLetter):", # Partition drive letter
-                            "/FS:FAT32",                        # File system
-                            "/Q",                               # Quick format
-                            "/Y"                                # Suppress prompt
-                            )
-
+                            "$($systemPartition.DriveLetter):",
+                            "/FS:FAT32",
+                            "/Q",
+                            "/Y"
+                        )
                         Run-Executable -Executable format -Arguments $formatArgs
                     }
 
                     #
-                    # Create the reserved partition
+                    # Create MSR Partition
                     #
                     Write-W2VInfo "Creating MSR partition..."
-                    $reservedPartition = New-Partition -DiskNumber $disk.Number -Size 128MB -GptType '{e3c9e316-0b5c-4db8-817d-f92df00215ae}'
+                    $reservedPartition = New-Partition `
+                        -DiskNumber $disk.Number `
+                        -Size 128MB `
+                        -GptType '{e3c9e316-0b5c-4db8-817d-f92df00215ae}'
 
                     #
-                    # Create the Windows partition
+                    # Create Windows Partition
                     #
                     Write-W2VInfo "Creating windows partition..."
-                    $windowsPartition = New-Partition -DiskNumber $disk.Number -UseMaximumSize -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}'
+                    $windowsPartition = New-Partition `
+                        -DiskNumber $disk.Number `
+                        -UseMaximumSize `
+                        -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}' `
+                        -AssignDriveLetter  # Critical for formatting
+
+                    # Refresh partition object
+                    $windowsPartition = $windowsPartition | Get-Partition
+
+                    # Verify drive letter assignment
+                    if (-not $windowsPartition.DriveLetter) {
+                        throw "Failed to assign drive letter to Windows partition!"
+                    }
 
                     Write-W2VInfo "Formatting windows volume..."
-                    $windowsVolume = Format-Volume -Partition $windowsPartition -FileSystem NTFS -Force -Confirm:$false
+                    Format-Volume `
+                        -DriveLetter $windowsPartition.DriveLetter `
+                        -FileSystem NTFS `
+                        -NewFileSystemLabel "Windows" `
+                        -Force `
+                        -Confirm:$false
                 }
 
                 "WindowsToGo"
@@ -2196,45 +2230,22 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             }
 
             #
-            # Assign drive letter to Windows partition.  This is required for bcdboot
+            # Assign drive letter to Windows partition (already done during creation)
             #
 
-            $attempts = 1
-            $assigned = $false
-
-            do
-            {
-                $windowsPartition | Add-PartitionAccessPath -AssignDriveLetter
-                $windowsPartition = $windowsPartition | Get-Partition
-                if($windowsPartition.DriveLetter -ne 0)
-                {
-                    $assigned = $true
-                }
-                else
-                {
-                    #sleep for up to 10 seconds and retry
-                    Get-Random -Minimum 1 -Maximum 10 | Start-Sleep
-
-                    $attempts++
-                }
-            }
-            while ($attempts -le 100 -and -not($assigned))
-
-            if (-not($assigned))
-            {
-                throw "Unable to get Partition after retry"
+            # Check if drive letter is already assigned
+            $windowsPartition = $windowsPartition | Get-Partition
+            if (-not $windowsPartition.DriveLetter) {
+                throw "Drive letter not assigned to Windows partition!"
             }
 
-            $windowsDrive = $(Get-Partition -Volume $windowsVolume).AccessPaths[0].substring(0,2)
-            Write-W2VInfo "Windows path ($windowsDrive) has been assigned."
-            Write-W2VInfo "Windows path ($windowsDrive) took $attempts attempts to be assigned."
+            $windowsDrive = "$($windowsPartition.DriveLetter):"
 
             #
             # Refresh access paths (we have now formatted the volume)
             #
             $systemPartition = $systemPartition | Get-Partition
             $systemDrive = $systemPartition.AccessPaths[0].trimend("\").replace("\?", "??")
-            Write-W2VInfo "System volume location: $systemDrive"
 
             ####################################################################################################
             # APPLY IMAGE FROM WIM TO THE NEW VHD
