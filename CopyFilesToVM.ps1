@@ -1,21 +1,21 @@
-﻿$params = @{
+$params = @{
     VMName = "GPUPV"
-    SourcePath = "C:\Users\Bernardo\Downloads\en-us_windows_11_business_editions_version_24h2_x64_dvd_59a1851e.iso"
-    Edition    = 5
+    SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"
+    Edition    = 6
     VhdFormat  = "VHDX"
     DiskLayout = "UEFI"
-    SizeBytes  = 100GB
-    MemoryAmount = 12GB
-    CPUCores = 8
+    SizeBytes  = 40GB
+    MemoryAmount = 8GB
+    CPUCores = 4
     NetworkSwitch = "Default Switch"
-    VHDPath = "C:\VMs\"
+    VHDPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\"
     UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
-    GPUName = "AMD Radeon RX 6800 XT"
+    GPUName = "AUTO"
     GPUResourceAllocationPercentage = 50
     Team_ID = ""
     Key = ""
-    Username = "Bernardo"
-    Password = "123"
+    Username = "GPUVM"
+    Password = "CoolestPassword!"
     Autologon = "true"
 }
 
