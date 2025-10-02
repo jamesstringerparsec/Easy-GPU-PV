@@ -4397,5 +4397,5 @@ Start-VM -Name $params.VMName
 
 SmartExit -ExitReason "If all went well the Virtual Machine will have started, 
 In a few minutes it will load the Windows desktop, 
-when it does, install your favorite high performance remote desktop!
+when it does, install your favorite high performance remote desktop! " 
 
